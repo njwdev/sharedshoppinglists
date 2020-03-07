@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, Fragment } from 'react';
+import { useSelector } from 'react-redux';
 import Contact from './Contact';
 import { ContactsStore } from '../../context';
 import AddContact from './AddContact';
@@ -6,6 +7,7 @@ import axios from 'axios';
 
 const Contacts = () => {
   const contactList = useContext(ContactsStore);
+  const test = useSelector(state => state.list.test);
   const { dispatch } = contactList;
   const { contacts } = contactList.state;
 
@@ -20,7 +22,7 @@ const Contacts = () => {
     fetchData();
   }, [dispatch]);
 
-  console.log(contactList.state.contacts);
+  console.log(test);
 
   return (
     <Fragment>
