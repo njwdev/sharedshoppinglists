@@ -5,6 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from './components/Navigation/Header';
 import Contacts from './components/Contacts/Contacts';
 import Lists from './components/Lists/Lists';
+import Landing from './components/Landing/Landing';
 import { ContactsProvider } from './context';
 import About from './components/Pages/About';
 import EditContact from './components/Contacts/EditContact';
@@ -14,7 +15,17 @@ import { Provider } from 'react-redux';
 import store from './store/index';
 
 const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+    primary: { main: '#FF69B4' },
+    secondary: { main: '#e7e7e7' },
+    background: {
+      default: '#282c34',
+      contrastText: '#ffffff',
+    },
+  },
   typography: {
+    useNextVariants: true,
     fontFamily: 'Josefin Sans',
   },
 });
@@ -27,10 +38,10 @@ const App = () => {
           <Router>
             <Fragment>
               <CssBaseline />
-              <Header branding="Shared Shopping Lists" />
               <Fragment>
                 <Switch>
-                  <Route exact path="/" component={Contacts}></Route>
+                  <Route exact path="/" component={Landing}></Route>
+                  <Header branding="Shared Shopping Lists" />
                   <Route exact path="/about" component={About}></Route>
                   <Route exact path="/lists" component={Lists}></Route>
                   <Route
