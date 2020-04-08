@@ -8,7 +8,6 @@ import CardContent from '@material-ui/core/CardContent';
 import { IoIosClose } from 'react-icons/io';
 import { MdEdit } from 'react-icons/md';
 import { MdExpandMore } from 'react-icons/md';
-import { ContactsStore } from '../../context';
 import axios from 'axios';
 
 const useStyles = makeStyles({
@@ -35,8 +34,8 @@ const useStyles = makeStyles({
 
 const Contact = ({ contact }) => {
   const [showContactInfo, setShowContactInfo] = useState(false);
-  const contactsList = useContext(ContactsStore);
-  const { dispatch } = contactsList;
+  // const contactsList = useContext(ContactsStore);
+  // const { dispatch } = contactsList;
   const setShowContactHandler = () => {
     setShowContactInfo(!showContactInfo);
   };
@@ -45,7 +44,7 @@ const Contact = ({ contact }) => {
 
   const handleClick = () => {
     axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
-    dispatch({ type: 'DELETE_CONTACT', payload: id });
+    // dispatch({ type: 'DELETE_CONTACT', payload: id });
   };
 
   return (

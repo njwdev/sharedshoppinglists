@@ -6,7 +6,6 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import { FiUserPlus, FiPhone, FiMail } from 'react-icons/fi';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import { ContactsStore } from '../../context';
 import axios from 'axios';
 
 const inputFormData = [
@@ -31,31 +30,31 @@ const useStyles = makeStyles({
   },
 });
 
-const EditContact = props => {
+const EditContact = (props) => {
   const [contactData, setContactData] = useState({
     name: '',
     phone: '',
     email: '',
     id: '',
   });
-  const contactList = useContext(ContactsStore);
-  const { dispatch } = contactList;
+  // const contactList = useContext(ContactsStore);
+  // const { dispatch } = contactList;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { id } = props.match.params;
-      const result = await axios.get(
-        `https://jsonplaceholder.typicode.com/users/${id}`,
-      );
-      setContactData(result.data);
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const { id } = props.match.params;
+  //     const result = await axios.get(
+  //       `https://jsonplaceholder.typicode.com/users/${id}`,
+  //     );
+  //     setContactData(result.data);
+  //   };
 
-    fetchData();
-  }, [dispatch, props.match.params]);
+  //   fetchData();
+  // }, [dispatch, props.match.params]);
 
-  const inputChangeHandler = e => {
+  const inputChangeHandler = (e) => {
     const { name, value } = e.target;
-    setContactData(prevState => ({
+    setContactData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -63,13 +62,12 @@ const EditContact = props => {
 
   const { id } = props.match.params;
 
-  const submitHandler = e => {
+  const submitHandler = (e) => {
     e.preventDefault();
 
-    axios
-      .put(`https://jsonplaceholder.typicode.com/users/${id}`, contactData)
-      .then(res => dispatch({ type: 'UPDATE_CONTACT', payload: res.data }));
-    setContactData(prevState => ({
+    axios.put(`https://jsonplaceholder.typicode.com/users/${id}`, contactData);
+    // .then((res) => dispatch({ type: 'UPDATE_CONTACT', payload: res.data }));
+    setContactData((prevState) => ({
       ...prevState,
       name: '',
       phone: '',
@@ -85,7 +83,7 @@ const EditContact = props => {
     <React.Fragment>
       <h1>Edit Contact</h1>
       <form onSubmit={submitHandler} className={classes.root}>
-        {inputFormData.map(data => (
+        {inputFormData.map((data) => (
           <FormControl key={data.label} style={{ margin: '10px' }}>
             <InputLabel htmlFor="input-with-icon-adornment">
               {data.label}

@@ -1,12 +1,14 @@
 import React, { Fragment } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
-import { Typography } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../store/actions/authActions';
 
 const useStyles = makeStyles({
   root: {
@@ -43,10 +45,16 @@ HideOnScroll.propTypes = {
   children: PropTypes.element.isRequired,
 };
 
-const Header = props => {
+const Header = (props) => {
   const classes = useStyles();
+  const auth = useSelector((state) => state.auth.isAuth);
+  const dispatch = useDispatch();
 
-  return (
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
+
+  return auth ? (
     <Fragment>
       <HideOnScroll {...props}>
         <AppBar className={classes.root}>
@@ -69,12 +77,16 @@ const Header = props => {
             >
               <Typography variant="h6">About</Typography>
             </NavLink>
+
+            <Button onClick={logoutHandler}>Logout</Button>
           </Toolbar>
         </AppBar>
       </HideOnScroll>
       <Toolbar />
       {/* Ensures no content behind fixed appbar */}
     </Fragment>
+  ) : (
+    <Redirect to="/" />
   );
 };
 

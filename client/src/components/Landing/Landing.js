@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Redirect } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
@@ -12,6 +12,7 @@ import Tab from '@material-ui/core/Tab';
 import SignInTab from './SignInTab';
 import SignUpTab from './SignUpTab';
 import Typography from '@material-ui/core/Typography';
+import { useSelector } from 'react-redux';
 
 const TabPanel = ({ children, value, index, other }) => {
   return (
@@ -86,11 +87,16 @@ const useStyles = makeStyles(
 const Landing = () => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const auth = useSelector((state) => state.auth.isAuth);
   const theme = useTheme();
   const handleChangeTab = (event, newValue) => {
     setValue(newValue);
     console.log(event);
   };
+  // @TODO - still glimpse page - remove this
+  if (auth) {
+    return <Redirect to="/dashboard" />;
+  }
 
   return (
     <Grid container component="main" className={classes.root}>

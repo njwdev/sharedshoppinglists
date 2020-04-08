@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
@@ -42,21 +42,21 @@ const CreateList = () => {
 
   const dispatch = useDispatch();
 
-  const inputChangeHandler = e => {
+  const inputChangeHandler = (e) => {
     const { name, value } = e.target;
-    setCreateListData(prevState => ({
+    setCreateListData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
-  const submitHandler = e => {
+  const submitHandler = (e) => {
     e.preventDefault();
 
     axios
       .post('https://jsonplaceholder.typicode.com/users', createListData)
-      .then(res => dispatch(createList(res.data)));
-    setCreateListData(prevState => ({
+      .then((res) => dispatch(createList(res.data)));
+    setCreateListData((prevState) => ({
       ...prevState,
       name: '',
       phone: '',
@@ -69,7 +69,7 @@ const CreateList = () => {
 
   return (
     <form onSubmit={submitHandler} className={classes.root}>
-      {inputFormData.map(data => (
+      {inputFormData.map((data) => (
         <FormControl key={data.label} style={{ margin: '10px' }}>
           <InputLabel htmlFor="input-with-icon-adornment">
             {data.label}

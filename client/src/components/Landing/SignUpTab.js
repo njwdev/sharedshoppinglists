@@ -1,9 +1,11 @@
 import React, { Fragment, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import { useSelector, useDispatch } from 'react-redux';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-
+import { showAlert } from '../../store/actions/alertActions';
+import { signUpUser } from '../../store/actions/authActions';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -34,6 +36,8 @@ const SignUpTab = () => {
     passwordConfirmation: '',
   });
 
+  const dispatch = useDispatch();
+
   const { name, email, password, passwordConfirmation } = formData;
 
   const onChangeHandler = (e) => {
@@ -43,9 +47,9 @@ const SignUpTab = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     if (password !== passwordConfirmation) {
-      console.log('passwords do not match');
+      dispatch(showAlert(true, 'Passwords do not match', 'error'));
     } else {
-      console.log('Register Success');
+      dispatch(signUpUser({ name, email, password }));
     }
   };
 

@@ -1,12 +1,14 @@
 import React, { Fragment, useState } from 'react';
 import Button from '@material-ui/core/Button';
+import { useSelector, useDispatch } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { loginUser } from '../../store/actions/authActions';
+import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,6 +35,8 @@ const SignInTab = () => {
     email: '',
     password: '',
   });
+  const auth = useSelector((state) => state.auth.isAuth);
+  const dispatch = useDispatch();
 
   const { email, password } = formData;
 
@@ -42,8 +46,7 @@ const SignInTab = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-
-    console.log('Login Success');
+    dispatch(loginUser({ email, password }));
   };
 
   return (
