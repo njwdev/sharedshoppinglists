@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -6,7 +6,6 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import { FiUserPlus, FiPhone, FiMail } from 'react-icons/fi';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import { ContactsStore } from '../../context';
 import axios from 'axios';
 
 const inputFormData = [
@@ -39,24 +38,22 @@ const AddContact = () => {
     id: '',
   });
 
-  const contactsList = useContext(ContactsStore);
-  const { dispatch } = contactsList;
+  // const { dispatch } = contactsList;
 
-  const inputChangeHandler = e => {
+  const inputChangeHandler = (e) => {
     const { name, value } = e.target;
-    setAddContactData(prevState => ({
+    setAddContactData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
-  const submitHandler = e => {
+  const submitHandler = (e) => {
     e.preventDefault();
 
-    axios
-      .post('https://jsonplaceholder.typicode.com/users', addContactData)
-      .then(res => dispatch({ type: 'ADD_CONTACT', payload: res.data }));
-    setAddContactData(prevState => ({
+    axios.post('https://jsonplaceholder.typicode.com/users', addContactData);
+    // .then((res) => dispatch({ type: 'ADD_CONTACT', payload: res.data }));
+    setAddContactData((prevState) => ({
       ...prevState,
       name: '',
       phone: '',
@@ -69,7 +66,7 @@ const AddContact = () => {
 
   return (
     <form onSubmit={submitHandler} className={classes.root}>
-      {inputFormData.map(data => (
+      {inputFormData.map((data) => (
         <FormControl key={data.label} style={{ margin: '10px' }}>
           <InputLabel htmlFor="input-with-icon-adornment">
             {data.label}

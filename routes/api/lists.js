@@ -146,7 +146,7 @@ router.put(
   },
 );
 
-//@put api/lists
+//@put api/lists  @TODO - could change to delete?
 //@desc Remove a list item from the list
 //@access - Private - only listUsers can access
 
