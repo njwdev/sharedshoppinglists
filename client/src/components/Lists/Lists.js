@@ -1,28 +1,35 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as actionTypes from '../../store/actions/actionTypes';
 import List from './List';
 import axios from 'axios';
 import CreateList from '../Lists/CreateList';
-import { fetchList } from '../../store/actions/listActions';
+import { fetchLists } from '../../store/actions/listActions';
+import Typography from '@material-ui/core/Typography';
+import Spinner from '../Layout/Spinner';
+// import { fetchList } from '../../store/actions/listActions';
 
 const Lists = () => {
   const dispatch = useDispatch();
-  const lists = useSelector(state => state.list.lists);
+  const [loading, setLoading] = useState(true);
+  const lists = useSelector((state) => state.list.lists);
   useEffect(() => {
-    axios
-      .get('https://jsonplaceholder.typicode.com/users')
-      .then(res =>
-        dispatch({ type: actionTypes.FETCH_LIST, payload: res.data }),
-      );
+    const getLists = async () => {
+      await dispatch(fetchLists());
+    };
+    getLists();
+    setLoading(false);
   }, [dispatch]);
 
-  return (
-    <Fragment>
-      <h1>My Lists</h1>
+  return loading ? (
+    <Spinner />
+  ) : (
+    <>
+      <Typography variant="h3">My Lists</Typography>
       <CreateList></CreateList>
-      {lists && lists.map(list => <List key={list.id} list={list}></List>)}
-    </Fragment>
+      {lists &&
+        lists.map((list) => <List key={list.dateCreated} list={list}></List>)}
+    </>
   );
 };
 

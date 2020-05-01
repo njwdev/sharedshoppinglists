@@ -1,4 +1,4 @@
-import { SHOW_ALERT } from './actionTypes';
+import { SHOW_ALERT, REMOVE_ALERT } from './actionTypes';
 
 export function showAlert(open, text, type) {
   return {
@@ -7,28 +7,10 @@ export function showAlert(open, text, type) {
   };
 }
 
-// export const setAlert = (msg, alertType) => (dispatch) => {
-//   const id = uuid.v4();
-//   dispatch(
-//     {
-//       type: actionTypes.SET_ALERT,
-//       payload: { msg, alertType, id },
-//     },
-//     console.log('alert sent'),
-//   );
-//   setTimeout(
-//     () =>
-//       dispatch(
-//         { type: actionTypes.REMOVE_ALERT, payload: id },
-//         console.log('alert removed'),
-//       ),
-//     2000,
-//   );
-// };
-
-// export const removeAlert = (id) => (dispatch) => {
-//   dispatch(
-//     { type: actionTypes.REMOVE_ALERT, payload: id },
-//     console.log('manual remove'),
-//   );
-// };
+export function removeAlert(open, text, type) {
+  console.log('removed alert');
+  return {
+    type: REMOVE_ALERT,
+    payload: { open: false, text: '', type: '' },
+  };
+}

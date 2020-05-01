@@ -17,6 +17,7 @@ const ListSchema = new Schema({
   },
   // List users, an array of people with access
   listUsers: {
+    // type: [String],
     type: [Schema.Types.ObjectId],
     ref: 'users',
   },

@@ -5,18 +5,22 @@ import PropTypes from 'prop-types';
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
 import CardActions from '@material-ui/core/CardActions';
+import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 import CardContent from '@material-ui/core/CardContent';
-import { IoIosClose } from 'react-icons/io';
+import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
+import EditOutlined from '@material-ui/icons/EditOutlined';
 import { MdEdit } from 'react-icons/md';
-import { MdExpandMore } from 'react-icons/md';
-import axios from 'axios';
-import { deleteList } from '../../store/actions/listActions';
 
-const useStyles = makeStyles({
+import Moment from 'react-moment';
+
+const useStyles = makeStyles((theme) => ({
   root: {
-    margin: '1.66%',
-    border: '1px solid rgba(128,0,128,0.1)',
-    boxShadow: '3px 3px 10px rgba(0,0,0,0.4)',
+    flexGrow: 1,
+    marginTop: theme.spacing(1),
+    border: '1px solid rgba(255,105,180,0.2)',
+    boxShadow: '3px 3px 10px rgba(255,105,180,0.2)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   downIcon: {
     height: '100%',
@@ -25,14 +29,24 @@ const useStyles = makeStyles({
   },
   actionIcons: {
     float: 'right',
+    flexGrow: 1,
   },
   icon: {
     margin: '0 1rem',
     cursor: 'pointer',
     textDecoration: 'none',
-    color: 'rgba(0, 0, 0, 0.87)',
+    // color: 'rgba(0, 0, 0, 0.87)',
   },
-});
+  cardAction: {
+    padding: theme.spacing(0, 1),
+    lineHeight: '1',
+    margin: '0px 0',
+  },
+  title: {
+    // display: 'flex',
+    flexGrow: 1,
+  },
+}));
 
 const List = ({ list }) => {
   const [showListInfo, setShowListInfo] = useState(false);
@@ -41,42 +55,70 @@ const List = ({ list }) => {
     setShowListInfo(!showListInfo);
   };
   const classes = useStyles();
-  const { name, email, phone, id } = list;
+  const { title, dateCreated, lastUpdated, listUsers } = list;
 
-  // const handleClick = () => {
-  //   axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
-  //   dispatch({ type: 'DELETE_CONTACT', payload: id });
-  // };
+  const cardActionsData = [
+    {
+      actionText: 'Last updated:  ',
+      actionData: (
+        <Moment format="MMMM Do YYYY, [at] HH:mm">{lastUpdated}</Moment>
+      ),
+      actionIcon: <MdEdit></MdEdit>,
+    },
+    // {
+    //   actionText: 'Created: ',
+    //   actionData: (
+    //     <Moment format="MMMM Do YYYY, [at] h:mm a">{dateCreated}</Moment>
+    //   ),
+    //   actionIcon: <MdEdit></MdEdit>,
+    // },
+    {
+      actionText: 'Shared with: ',
+      actionData: (
+        <span style={{ color: 'rgba(255,105,180,1)' }}>
+          {listUsers.length <= 1 ? 'No one' : listUsers}
+        </span>
+      ),
+      actionIcon: <MdEdit></MdEdit>,
+    },
+  ];
 
   return (
     <Card className={classes.root}>
       <CardContent>
-        <h3>
-          {name}
-          <MdExpandMore
-            className={classes.downIcon}
-            onClick={setShowListHandler}
-          />
+        <div className={classes.title}>
+          <Typography variant="h6">{title}</Typography>
           <div className={classes.actionIcons}>
-            <Link to={`/editcontact/${id}`}>
-              <MdEdit className={classes.icon}></MdEdit>
-            </Link>
-            <span></span>
-            <IoIosClose
-              className={classes.icon}
-              alt="delete user"
-              onClick={() => dispatch(deleteList(id))}
-            />
+            <Tooltip aria-label="edit list title" title="edit">
+              <EditOutlined
+                aria-label="edit list title"
+                className={classes.icon}
+              ></EditOutlined>
+            </Tooltip>
+            <Tooltip aria-label="delete" title="delete">
+              <DeleteOutlined
+              // onClick={() => dispatch(deleteList(id))}
+              />
+            </Tooltip>
           </div>
-        </h3>
+        </div>
+
         {showListInfo ? (
           <ul>
-            <li>{email}</li>
-            <li>{phone}</li>
-            <li>{id}</li>
+            <li>ss</li>
+            <li>ss</li>
+            <li>s</li>
           </ul>
         ) : null}
       </CardContent>
+      {cardActionsData.map((data) => (
+        <CardActions key={data.actionText} className={classes.cardAction}>
+          <Typography variant="caption">
+            {data.actionText} {data.actionData}
+          </Typography>
+        </CardActions>
+      ))}
+
       {showListInfo ? (
         <CardActions>
           <p> Something here</p>

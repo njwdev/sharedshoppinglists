@@ -31,27 +31,22 @@ router.get('/me', auth, async (req, res) => {
 
 router.post(
   '/',
-  [
-    auth,
-    [
-      check('location', 'location is required')
-        .not()
-        .isEmpty(),
-    ],
-  ],
+  [auth, [check('location', 'location is required').not().isEmpty()]],
+  [auth, [check('name', 'name is required').not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { location, twitter, instagram } = req.body;
+    const { name, location, twitter, instagram } = req.body;
 
     const profileFields = {};
     profileFields.user = req.user.id;
     profileFields.socials = {};
 
     if (location) profileFields.location = location;
+    if (name) profileFields.name = name;
     if (twitter) profileFields.socials.twitter = twitter;
     if (instagram) profileFields.socials.instagram = instagram;
 
