@@ -2,14 +2,17 @@ import axios from 'axios';
 import { showAlert } from './alertActions';
 import * as actionTypes from './actionTypes';
 import setAuthToken from '../../utils/setAuthToken';
+import { getCurrentProfile } from './profileActions';
+// import { clearProfile } from './profileActions';
 
 export const loadUser = () => async (dispatch) => {
-  if (localStorage.token) {
-    setAuthToken(localStorage.token);
-  }
+  // if (localStorage.token) {
+  //   setAuthToken(localStorage.token);
+  // }
   try {
     const res = await axios.get('/api/auth');
     dispatch({ type: actionTypes.USER_LOADED, payload: res.data });
+    // get profile too
   } catch (error) {
     dispatch({ type: actionTypes.AUTH_ERROR });
   }
@@ -30,6 +33,7 @@ export const signUpUser = ({ name, email, password }) => async (dispatch) => {
       type: actionTypes.SIGN_UP_USER_SUCCESS,
       payload: res.data,
     });
+    dispatch(showAlert(true, 'Sign up successful!', 'success'));
     dispatch(loadUser());
   } catch (error) {
     const errors = await error.response.data.errors;
@@ -59,6 +63,7 @@ export const loginUser = ({ email, password }) => async (dispatch) => {
       payload: res.data,
     });
     dispatch(loadUser());
+    dispatch(showAlert(true, 'Sign in successful!', 'success'));
   } catch (error) {
     const errors = await error.response.data.errors;
     if (errors) {
@@ -72,6 +77,8 @@ export const loginUser = ({ email, password }) => async (dispatch) => {
 };
 
 //Logout
-export const logout = () => async (dispatch) => {
+export const logout = () => (dispatch) => {
+  dispatch({ type: actionTypes.CLEAR_PROFILE });
   dispatch({ type: actionTypes.LOGOUT });
+  dispatch(showAlert(true, 'Logout successful', 'success'));
 };

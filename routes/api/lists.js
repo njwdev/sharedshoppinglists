@@ -14,14 +14,7 @@ const Profile = require('../../models/Profile');
 
 router.post(
   '/',
-  [
-    auth,
-    [
-      check('title', 'Title is required')
-        .not()
-        .isEmpty(),
-    ],
-  ],
+  [auth, [check('title', 'Title is required').not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -37,6 +30,9 @@ router.post(
         avatar: user.avatar,
         user: req.user.id,
       });
+      console.log(req.body);
+      await newList.listUsers.unshift(req.user.id, req.body.id);
+      //req.body.id adds the 'shared with' user
 
       const list = await newList.save();
       res.json(list);
@@ -113,12 +109,8 @@ router.put(
   '/:id',
   auth,
   [
-    check('itemName', 'Item name is required')
-      .not()
-      .isEmpty(),
-    check('quantity', 'Quantity is required')
-      .not()
-      .isEmpty(),
+    check('itemName', 'Item name is required').not().isEmpty(),
+    check('quantity', 'Quantity is required').not().isEmpty(),
   ],
   async (req, res) => {
     try {
@@ -156,11 +148,11 @@ router.put('/:id/:itemId', auth, async (req, res) => {
     // console.log(list);
 
     const newlistItems = await list.listItems.filter(
-      el => el.id !== req.params.itemId,
+      (el) => el.id !== req.params.itemId,
     );
 
     const itemToRemove = await list.listItems.filter(
-      el => el.id === req.params.itemId,
+      (el) => el.id === req.params.itemId,
     );
 
     const itemToRemoveName = await itemToRemove[0].itemName;

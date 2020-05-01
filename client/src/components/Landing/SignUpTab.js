@@ -1,12 +1,12 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { showAlert } from '../../store/actions/alertActions';
 import { signUpUser } from '../../store/actions/authActions';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,7 +54,7 @@ const SignUpTab = () => {
   };
 
   return (
-    <Fragment>
+    <>
       <form className={classes.form} onSubmit={(e) => onSubmitHandler(e)}>
         <TextField
           variant="outlined"
@@ -121,7 +121,7 @@ const SignUpTab = () => {
           Sign Up
         </Button>
       </form>
-    </Fragment>
+    </>
   );
 };
 
