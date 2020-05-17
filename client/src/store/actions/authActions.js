@@ -1,9 +1,6 @@
 import axios from 'axios';
 import { showAlert } from './alertActions';
 import * as actionTypes from './actionTypes';
-import setAuthToken from '../../utils/setAuthToken';
-import { getCurrentProfile } from './profileActions';
-// import { clearProfile } from './profileActions';
 
 export const loadUser = () => async (dispatch) => {
   // if (localStorage.token) {
@@ -40,7 +37,7 @@ export const signUpUser = ({ name, email, password }) => async (dispatch) => {
     if (errors) {
       errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
     }
-    console.log(error);
+
     dispatch({
       type: actionTypes.SIGN_UP_USER_FAIL,
     });
@@ -69,7 +66,7 @@ export const loginUser = ({ email, password }) => async (dispatch) => {
     if (errors) {
       errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
     }
-    console.log(error);
+
     dispatch({
       type: actionTypes.LOGIN_FAIL,
     });

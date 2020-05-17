@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProfile } from '../../store/actions/profileActions';
+import { updateProfile } from '../../store/actions/profileActions';
 import { makeStyles } from '@material-ui/core/styles';
 import Spinner from '../Layout/Spinner';
 
@@ -17,21 +17,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditProfile = () => {
+const UpdateProfile = () => {
   const [loading, setLoading] = useState(true);
   const classes = useStyles();
   const [formData, setFormData] = useState({
     name: '',
     location: '',
   });
-  let history = useHistory();
   const dispatch = useDispatch();
-  const { profile } = useSelector((state) => state.profile);
-
+  const { user } = useSelector((state) => state.auth);
+  let history = useHistory();
   useEffect(() => {
-    setFormData({ name: profile.name, location: profile.location });
+    setFormData({ name: user.profile.name, location: '' });
     setLoading(false);
-  }, []);
+  }, [user.profile.name]);
 
   const { name, location } = formData;
 
@@ -41,7 +40,7 @@ const EditProfile = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    dispatch(createProfile({ name, location }, history, true));
+    dispatch(updateProfile({ name, location }, history));
   };
 
   return loading ? (
@@ -59,7 +58,6 @@ const EditProfile = () => {
           name="name"
           value={name}
           onChange={(e) => onChangeHandler(e)}
-          // autoComplete="name"
           autoFocus
         />
         <TextField
@@ -80,11 +78,11 @@ const EditProfile = () => {
           color="primary"
           className={classes.submit}
         >
-          Save Changes
+          Create Profile
         </Button>
       </form>
     </>
   );
 };
 
-export default EditProfile;
+export default UpdateProfile;

@@ -8,7 +8,6 @@ export function showAlert(open, text, type) {
 }
 
 export function removeAlert(open, text, type) {
-  console.log('removed alert');
   return {
     type: REMOVE_ALERT,
     payload: { open: false, text: '', type: '' },

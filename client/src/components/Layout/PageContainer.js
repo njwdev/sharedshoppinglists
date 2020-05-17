@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '3px 3px 15px rgba(255,105,180,0.2)',
   },
   container: {
-    padding: theme.spacing(4),
+    padding: theme.spacing(1),
   },
 }));
 
