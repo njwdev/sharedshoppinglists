@@ -3,8 +3,7 @@ import { showAlert } from './alertActions';
 import {
   GET_PROFILE,
   PROFILE_ERROR,
-  CREATE_PROFILE_FAIL,
-  CREATE_PROFILE_SUCCESS,
+  UPDATE_PROFILE_FAIL,
   UPDATE_PROFILE_SUCCESS,
   CLEAR_PROFILE,
   FETCH_ALL_PROFILES_SUCCESS,
@@ -13,7 +12,7 @@ import {
 
 export const getCurrentProfile = () => async (dispatch) => {
   try {
-    const res = await axios.get('/api/profile/me');
+    const res = await axios.get('/api/users/me');
     dispatch({
       type: GET_PROFILE,
       payload: res.data,
@@ -29,55 +28,43 @@ export const getCurrentProfile = () => async (dispatch) => {
   }
 };
 
-export const createProfile = (
-  { name, location },
-  history,
-  update = false,
-) => async (dispatch) => {
+export const updateProfile = ({ name, location }, history) => async (
+  dispatch,
+) => {
   const config = {
     headers: {
       'Content-Type': 'application/json',
     },
   };
-  console.log(update);
   const body = JSON.stringify({ name, location });
   try {
-    const res = await axios.post('/api/profile', body, config);
-    if (!update) {
-      dispatch({
-        type: CREATE_PROFILE_SUCCESS,
-        payload: res.data,
-      });
-      dispatch(showAlert(true, 'Profile created!', 'success'));
-    } else {
-      dispatch({
-        type: UPDATE_PROFILE_SUCCESS,
-        payload: res.data,
-      });
-      dispatch(showAlert(true, 'Profile updated!', 'success'));
-      history.push('/dashboard');
-    }
+    const res = await axios.post('/api/users/profile', body, config);
+    dispatch({
+      type: UPDATE_PROFILE_SUCCESS,
+      payload: res.data,
+    });
+    dispatch(showAlert(true, 'Profile updated!', 'success'));
+    history.push('/');
   } catch (error) {
     const errors = await error.response.data.errors;
     if (errors) {
       errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
     }
-    console.log(error);
+
     dispatch({
-      type: CREATE_PROFILE_FAIL,
+      type: UPDATE_PROFILE_FAIL,
     });
   }
 };
 
 export const clearProfile = () => async (dispatch) => {
   dispatch({ type: CLEAR_PROFILE });
-  console.log('profile cleared');
 };
 
 export const getProfiles = () => async (dispatch) => {
   try {
-    const res = await axios.get('/api/profile/');
-    console.log(res);
+    const res = await axios.get('/api/users/profiles');
+
     dispatch({ type: FETCH_ALL_PROFILES_SUCCESS, payload: res.data });
   } catch (error) {
     const errors = await error.response.data.errors;

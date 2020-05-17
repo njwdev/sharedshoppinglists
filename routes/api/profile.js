@@ -10,20 +10,20 @@ const User = require('../../models/User');
 // @desc Get current users profile
 // @access Private
 
-router.get('/me', auth, async (req, res) => {
-  try {
-    const profile = await Profile.findOne({
-      user: req.user.id,
-    }).populate('user', ['name', 'avatar', 'date', 'lastLogin']);
-    if (!profile) {
-      return res.status(400).json({ msg: 'No profile for this user' });
-    }
-    res.json(profile);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error in profile');
-  }
-});
+// router.get('/me', auth, async (req, res) => {
+//   try {
+//     const profile = await Profile.findOne({
+//       user: req.user.id,
+//     }).populate('user', ['name', 'avatar', 'date', 'lastLogin']);
+//     if (!profile) {
+//       return res.status(400).json({ msg: 'No profile for this user' });
+//     }
+//     res.json(profile);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send('Server error in profile');
+//   }
+// });
 
 // @route POST api/profile
 // @desc Create / update current users profile

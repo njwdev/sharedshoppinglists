@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import AutoComplete from '@material-ui/lab/Autocomplete';
@@ -6,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createList } from '../../store/actions/listActions';
 import { getProfiles } from '../../store/actions/profileActions';
 import { makeStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Spinner from '../Layout/Spinner';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,54 +26,73 @@ const useStyles = makeStyles((theme) => ({
 const CreateList = () => {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
+  let history = useHistory();
   const [formData, setFormData] = useState({
     title: '',
-    sharedWith: {
-      name: '',
-      id: '',
-    },
+    sharedWith: [
+      {
+        name: '',
+        userId: '',
+      },
+    ],
   });
+
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+
   const { profiles } = useSelector((state) => state.profile);
 
   useEffect(() => {
-    const getLists = async () => {
+    const getUserProfiles = async () => {
       await dispatch(getProfiles());
     };
-    getLists();
+    getUserProfiles();
     setLoading(true);
   }, [dispatch]);
 
+  const profileOptions = profiles.filter((u) => u._id !== user._id);
+  // filters out current user
+
   const { title, sharedWith } = formData;
-  console.log(profiles);
+
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    console.log(sharedWith);
-    console.log(formData);
   };
 
   const onACChangeHandler = (e, value) => {
+    const listUsers = value.map((u) => ({
+      name: u.profile.name,
+      userId: u._id,
+    }));
+
     if (value === null) {
-      setFormData({ ...formData, sharedWith: { name: '', id: '' } });
+      setFormData({ ...formData, sharedWith: [{ name: '', id: '' }] });
     } else {
       setFormData({
         ...formData,
-        sharedWith: { name: value.name, id: value._id },
+        sharedWith: listUsers,
       });
     }
   };
-  console.log(formData);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    dispatch(createList({ title, sharedWith }));
+
+    dispatch(createList({ title, sharedWith }, history));
   };
 
   return !loading ? (
     <Spinner></Spinner>
   ) : (
     <>
-      <form className={classes.form} onSubmit={(e) => onSubmitHandler(e)}>
+      {/* //onKeyPress stops error when pressing enter without autocomplete value */}
+      <form
+        className={classes.form}
+        onKeyPress={(e) => {
+          e.key === 'Enter' && e.preventDefault();
+        }}
+        onSubmit={(e) => onSubmitHandler(e)}
+      >
         <TextField
           required
           margin="normal"
@@ -83,25 +102,24 @@ const CreateList = () => {
           name="title"
           value={title}
           onChange={(e) => onChangeHandler(e)}
-          // autoComplete="name"
           autoFocus
         />
-
+        {/* @TODO allow multiple */}
         <AutoComplete
-          id="combo-box-demo"
-          options={profiles}
-          getOptionLabel={(profile) => profile.user.name}
+          multiple
+          id="search users"
+          options={profileOptions}
+          getOptionLabel={(profile) => profile.profile.name}
           forcePopupIcon={false}
           noOptionsText="No users found"
-          // onChange={(e, value) => onChangeHandler(e, value)}
           onChange={(e, value) => onACChangeHandler(e, value)}
           // open
           // open={shareWith && shareWith.length >= 1 ? true : false}
           renderOption={(profile) => (
             <React.Fragment>
-              <span>{profile.name}</span>
+              <span>{profile.profile.name}</span>
               <span className={classes.profileLocation}>
-                {profile.location}
+                {profile.profile.location}
                 {/* {profile.location} */}
               </span>
             </React.Fragment>

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../store/actions/authActions';
 import { makeStyles } from '@material-ui/core/styles';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 // import Typography from '@material-ui/core/Typography';
@@ -91,10 +91,12 @@ const NavBar = (props) => {
     {
       icon: <Add />,
       text: 'Add List',
+      link: '/create-list',
     },
     {
       icon: <FormatListBulletedRounded />,
       text: 'Active Lists',
+      link: '/lists',
     },
     {
       icon: (
@@ -131,10 +133,12 @@ const NavBar = (props) => {
                 <div>
                   {drawerData.map((item, index) => (
                     <div key={item.text}>
-                      <ListItem button>
-                        <ListItemIcon>{item.icon}</ListItemIcon>
-                        <ListItemText primary={item.text} />
-                      </ListItem>
+                      <Link className={classes.navLink} to={item.link}>
+                        <ListItem button>
+                          <ListItemIcon>{item.icon}</ListItemIcon>
+                          <ListItemText primary={item.text} />
+                        </ListItem>
+                      </Link>
                       <Divider />
                     </div>
                   ))}

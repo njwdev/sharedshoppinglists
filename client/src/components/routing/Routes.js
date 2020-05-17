@@ -7,7 +7,9 @@ import About from '../Pages/About';
 import NotFound from '../Pages/NotFound';
 import PrivateRoute from './PrivateRoute';
 import Dashboard from '../Dashboard/Dashboard';
-import EditProfile from '../Profile/EditProfile';
+
+import UpdateProfile from '../Profile/UpdateProfile';
+import DetailedListDisplay from '../Lists/DetailedListDisplay';
 
 const Routes = () => {
   return (
@@ -16,7 +18,12 @@ const Routes = () => {
       <Switch>
         <PrivateRoute exact path="/about" component={About}></PrivateRoute>
         <PrivateRoute exact path="/lists" component={Lists}></PrivateRoute>
-        <PrivateRoute exact path="/editprofile" component={EditProfile} />
+        <PrivateRoute
+          exact
+          path="/lists/:id"
+          component={DetailedListDisplay}
+        ></PrivateRoute>
+        <PrivateRoute exact path="/editprofile" component={UpdateProfile} />
         <PrivateRoute
           exact
           path="/dashboard"

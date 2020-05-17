@@ -4,7 +4,7 @@ import {
   CLEAR_PROFILE,
   CREATE_PROFILE_SUCCESS,
   UPDATE_PROFILE_SUCCESS,
-  CREATE_PROFILE_FAIL,
+  UPDATE_PROFILE_FAIL,
   FETCH_ALL_PROFILES_SUCCESS,
   FETCH_ALL_PROFILES_FAIL,
 } from '../actions/actionTypes';
@@ -51,7 +51,7 @@ export default function (state = initialState, action) {
       };
     }
 
-    case CREATE_PROFILE_FAIL: {
+    case UPDATE_PROFILE_FAIL: {
       return {
         ...state,
         profile: null,

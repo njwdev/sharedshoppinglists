@@ -26,13 +26,25 @@ router.post(
       const newList = new List({
         creator: req.user.id,
         title: req.body.title,
-        name: user.name,
         avatar: user.avatar,
         user: req.user.id,
       });
-      console.log(req.body);
-      await newList.listUsers.unshift(req.user.id, req.body.id);
-      //req.body.id adds the 'shared with' user
+
+      const { sharedWith } = req.body;
+
+      //Checks if List is shared
+
+      if (sharedWith[0].userId.length) {
+        await newList.listUsers.unshift(
+          { userId: req.user.id, name: user.profile.name },
+          ...sharedWith,
+        );
+      } else {
+        await newList.listUsers.unshift({
+          userId: req.user.id,
+          name: user.profile.name,
+        });
+      }
 
       const list = await newList.save();
       res.json(list);
@@ -46,8 +58,14 @@ router.post(
 router.get('/', auth, async (req, res) => {
   try {
     const user = req.user.id;
+
     //Gets all lists by logged in number @TODO - will find by listUsers
-    const lists = await List.find({ creator: user }).sort({ lastUpdated: -1 });
+    const lists = await List.find({
+      'listUsers.userId': user,
+    }).sort({
+      lastUpdated: -1,
+    });
+
     res.json(lists);
   } catch (error) {
     console.error(error.message);
@@ -62,7 +80,7 @@ router.get('/', auth, async (req, res) => {
 router.get('/:id', auth, async (req, res) => {
   try {
     const list = await List.findById(req.params.id).sort({ date: -1 });
-    // const lists = await List.find().sort({ date: -1 });
+
     if (!list) res.status(404).json({ msg: 'list not found' });
     res.json(list);
   } catch (error) {
@@ -101,7 +119,7 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-//@PUT api/lists
+//@PUT api/lists/:id
 //@desc Add list item to list
 //@access - Private - only listUsers can access
 
@@ -138,6 +156,84 @@ router.put(
   },
 );
 
+//@PUT api/lists/:id/edit-title
+//@desc Edit the list title
+//@access - Private - only listUsers can access
+//@TODO - refactor this for other fields
+
+router.put(
+  '/:id/edit-title',
+  auth,
+  [auth, [check('title', 'Title is required').not().isEmpty()]],
+  async (req, res) => {
+    try {
+      const list = await List.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          $set: { title: req.body.title },
+        },
+        { new: true },
+      );
+      res.send(list);
+
+      //@TODO - Check that user has permission to add listItem
+      // if (list.creator.toString() !== req.user.id) {
+      //   return res.status(401).json({ msg: 'User not authorized' });
+      // }
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error');
+    }
+  },
+);
+
+//@PUT api/lists/:id/:itemId/success
+//@desc set list item success
+//@access - Private - only listUsers can access
+
+router.put('/:id/:itemId/success', auth, async (req, res) => {
+  try {
+    const list = await List.findById(req.params.id);
+
+    const updatedListItem = await list.listItems.filter(
+      (el) => el.id === req.params.itemId,
+    );
+    //Removes prev fail info, if applicable
+    updatedListItem[0].fail = { fail: false };
+    if (req.body.success === true) {
+      updatedListItem[0].success = req.body;
+      updatedListItem[0].success.dateGot = Date.now();
+    } else {
+      updatedListItem[0].success.success = false;
+    }
+    //The else statement handles undo
+
+    await list.save();
+    res.send(list);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.put('/:id/:itemId/list-item-problem', auth, async (req, res) => {
+  console.log(req.body);
+  try {
+    const list = await List.findById(req.params.id);
+    const updatedListItem = await list.listItems.filter(
+      (el) => el.id === req.params.itemId,
+    );
+    updatedListItem[0].fail = req.body;
+    updatedListItem[0].fail.failDate = Date.now();
+    console.log(updatedListItem);
+    await list.save();
+    res.send(list);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 //@put api/lists  @TODO - could change to delete?
 //@desc Remove a list item from the list
 //@access - Private - only listUsers can access
@@ -145,9 +241,8 @@ router.put(
 router.put('/:id/:itemId', auth, async (req, res) => {
   try {
     const list = await List.findById(req.params.id);
-    // console.log(list);
 
-    const newlistItems = await list.listItems.filter(
+    const newListItems = await list.listItems.filter(
       (el) => el.id !== req.params.itemId,
     );
 
@@ -157,7 +252,7 @@ router.put('/:id/:itemId', auth, async (req, res) => {
 
     const itemToRemoveName = await itemToRemove[0].itemName;
 
-    list.listItems = newlistItems;
+    list.listItems = newListItems;
 
     if (!list) {
       res.status(404).json({ msg: 'List Item Not found' });

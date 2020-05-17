@@ -16,11 +16,20 @@ const ListSchema = new Schema({
     type: String,
   },
   // List users, an array of people with access
-  listUsers: {
-    // type: [String],
-    type: [Schema.Types.ObjectId],
-    ref: 'users',
-  },
+  listUsers: [
+    {
+      userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+      },
+      name: {
+        type: String,
+      },
+    },
+  ],
+  // type: [Schema.Types.ObjectId],
+  // ref: 'users',
+
   title: {
     type: String,
     required: true,
@@ -59,23 +68,38 @@ const ListSchema = new Schema({
         type: String,
       },
       success: {
-        type: Boolean,
-        default: false,
+        success: {
+          type: Boolean,
+          default: false,
+        },
+        name: {
+          type: String,
+        },
+        dateGot: {
+          type: Date,
+        },
         optionalNote: {
           type: String,
         },
         //Say which user got the product
       },
       fail: {
-        type: Boolean,
-        default: false,
+        fail: {
+          type: Boolean,
+          default: false,
+        },
+        name: {
+          type: String,
+        },
         reason: {
           type: String,
         },
         optionalNote: {
           type: String,
         },
-        //Reason dropdown, e.g none left in shop etc
+        failDate: {
+          type: Date,
+        },
       },
     },
   ],
