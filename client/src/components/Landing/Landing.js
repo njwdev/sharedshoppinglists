@@ -1,144 +1,103 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
+import { useSelector } from 'react-redux';
+//MUI Components
 import Grid from '@material-ui/core/Grid';
-// import SlPlaceholder from '../../assets/slplaceholder.jpg';
-import logo from '../../assets/logos/SSL_LOGO.png';
-
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
+import Paper from '@material-ui/core/Paper';
 import Tab from '@material-ui/core/Tab';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import TabContext from '@material-ui/lab/TabContext';
+import TabList from '@material-ui/lab/TabList';
+import TabPanel from '@material-ui/lab/TabPanel';
+
 import SignInTab from './SignInTab';
 import SignUpTab from './SignUpTab';
-import Typography from '@material-ui/core/Typography';
-import { useSelector } from 'react-redux';
-
-const TabPanel = ({ children, value, index, other }) => {
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      // <> check this
-      {...other}
-    >
-      {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
-  );
-};
-
-const a11yProps = (index) => {
-  return {
-    id: `full-width-tab-${index}`,
-    'aria-controls': `full-width-tabpanel-${index}`,
-  };
-};
+import logo from '../../assets/logos/SSL_LOGO.png';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100vh',
+    height: '100%',
   },
-  image: {
-    backgroundImage: `url(${logo})`,
-    backgroundRepeat: 'no-repeat',
+  background: {
     backgroundColor:
       theme.palette.type === 'light'
         ? theme.palette.grey[50]
         : theme.palette.grey[900],
-    backgroundSize: 'contain',
-    backgroundPosition: 'center',
-  },
-  paper: {
-    margin: theme.spacing(2, 4),
+    backgroundSize: 'cover',
     display: 'flex',
-    flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  signIn: {
-    width: '100%',
-    textAlign: 'left',
+
+  image: {
+    maxWidth: '329px',
+    maxHeight: '360px',
   },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  title: {
-    margin: theme.spacing(0, 0, 8),
-    width: '100%',
-    textAlign: 'left',
-  },
-  tabs: {
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: 'none',
-  },
-  tabText: {
-    color: theme.palette.text.primary,
+  paper: {
+    marginTop: '5%',
+    padding: theme.spacing(0, 1),
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));
 
 const Landing = () => {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
-  const auth = useSelector((state) => state.auth.isAuth);
+  const { isAuth } = useSelector((state) => state.user);
+  const [tab, setTab] = useState('1');
   const theme = useTheme();
-  const handleChangeTab = (event, newValue) => {
-    setValue(newValue);
+  const handleTabChange = (e, value) => {
+    setTab(value);
   };
 
-  if (auth) {
-    return <Redirect to="/dashboard" />;
+  if (isAuth) {
+    return <Redirect to='/dashboard' />;
   }
 
   return (
-    <Grid container component="main" className={classes.root}>
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <div className={classes.paper}>
-          <Typography className={classes.title} component="h1" variant="h4">
-            {/* Shared Shopping Lists */}
-          </Typography>
-
-          <Grid container>
-            <Grid item xs={12}>
-              <AppBar
-                className={classes.tabs}
-                position="static"
-                color="default"
-              >
-                <Tabs
-                  value={value}
-                  onChange={handleChangeTab}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  variant="fullWidth"
-                  aria-label="sign in and sign up tabs"
-                >
-                  <Tab
-                    className={classes.tabText}
-                    label="Sign In"
-                    {...a11yProps(0)}
-                  />
-                  <Tab
-                    className={classes.tabText}
-                    label="Sign Up"
-                    {...a11yProps(1)}
-                  />
-                </Tabs>
-              </AppBar>
+    <TabContext value={tab}>
+      <Grid container className={classes.root}>
+        {/* Landing image section */}
+        <Grid item xs={12} sm={6} md={6} className={classes.background}>
+          <img
+            className={classes.image}
+            src={logo}
+            alt='Shared Shopping List Logo'
+          />
+        </Grid>
+        {/* Landing Auth section */}
+        <Grid
+          className={classes.authContent}
+          item
+          xs={12}
+          sm={6}
+          md={6}
+          component={Paper}
+          elevation={0}>
+          <Paper elevation={0} className={classes.paper}>
+            <Grid className={classes.paper} container>
+              <Grid item xs={12}>
+                <TabList
+                  variant='fullWidth'
+                  onChange={handleTabChange}
+                  aria-label='sign in and sign up tabs'
+                  indicatorColor='primary'
+                  textColor='primary'>
+                  <Tab className={classes.tabText} label='Sign In' value='1' />
+                  <Tab className={classes.tabText} label='Sign Up' value='2' />
+                </TabList>
+              </Grid>
             </Grid>
-          </Grid>
-          <TabPanel value={value} index={0} dir={theme.direction}>
-            <SignInTab />
-          </TabPanel>
-          <TabPanel value={value} index={1} dir={theme.direction}>
-            <SignUpTab />
-          </TabPanel>
-        </div>
+            <TabPanel value='1' index={0} dir={theme.direction}>
+              <SignInTab />
+            </TabPanel>
+            <TabPanel value='2' index={1} dir={theme.direction}>
+              <SignUpTab />
+            </TabPanel>
+          </Paper>
+        </Grid>
       </Grid>
-    </Grid>
+    </TabContext>
   );
 };
 

@@ -5,7 +5,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { removeAlert } from '../../store/actions/alertActions';
 
 const Alert = (props) => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} variant='filled' {...props} />;
 };
 
 const AlertSnackBar = () => {
@@ -13,14 +13,14 @@ const AlertSnackBar = () => {
 
   const dispatch = useDispatch();
 
-  const handleClose = () => {
-    dispatch(removeAlert());
+  const handleClose = (open, text, type) => {
+    dispatch(removeAlert(open, text, type));
   };
 
   return (
-    <div>
+    <>
       {alert ? (
-        <div>
+        <>
           <Snackbar
             anchorOrigin={{
               vertical: 'bottom',
@@ -28,13 +28,12 @@ const AlertSnackBar = () => {
             }}
             open={alert ? alert.open : false}
             autoHideDuration={2000}
-            onClose={handleClose}
-          >
+            onClose={() => handleClose(false, '', alert.type)}>
             <Alert severity={alert.type}>{alert.text}</Alert>
           </Snackbar>
-        </div>
+        </>
       ) : null}
-    </div>
+    </>
   );
 };
 

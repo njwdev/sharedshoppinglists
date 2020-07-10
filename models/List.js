@@ -2,12 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ListSchema = new Schema({
-  //@Todo List image
   // List creator
   creator: {
-    type: Schema.Types.ObjectId,
-    ref: 'users',
-    required: true,
+    id: {
+      type: Schema.Types.ObjectId,
+      ref: 'users',
+      required: true,
+    },
+    name: {
+      type: String,
+    },
   },
   name: {
     type: String,
@@ -27,8 +31,6 @@ const ListSchema = new Schema({
       },
     },
   ],
-  // type: [Schema.Types.ObjectId],
-  // ref: 'users',
 
   title: {
     type: String,
@@ -48,11 +50,10 @@ const ListSchema = new Schema({
     {
       itemName: {
         type: String,
-        // required: true,
+        required: true,
       },
       quantity: {
         type: String,
-        // required: true,
       },
       dateAdded: {
         type: Date,
@@ -60,9 +61,14 @@ const ListSchema = new Schema({
         default: Date.now,
       },
       addedBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'users',
-        required: true,
+        id: {
+          type: Schema.Types.ObjectId,
+          ref: 'users',
+          required: true,
+        },
+        name: {
+          type: String,
+        },
       },
       extraInfo: {
         type: String,
@@ -81,7 +87,6 @@ const ListSchema = new Schema({
         optionalNote: {
           type: String,
         },
-        //Say which user got the product
       },
       fail: {
         fail: {
@@ -103,6 +108,16 @@ const ListSchema = new Schema({
       },
     },
   ],
+  complete: {
+    complete: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    completionDate: {
+      type: Date,
+    },
+  },
 });
 
 module.exports = List = mongoose.model('List', ListSchema);

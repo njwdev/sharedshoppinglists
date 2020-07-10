@@ -1,36 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProfile } from '../../store/actions/profileActions';
-import { makeStyles } from '@material-ui/core/styles';
+import AuthForm from '../Forms/AuthForm';
+import PageContainer from '../Layout/PageContainer';
 import Spinner from '../Layout/Spinner';
-
-const useStyles = makeStyles((theme) => ({
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
 
 const UpdateProfile = () => {
   const [loading, setLoading] = useState(true);
-  const classes = useStyles();
   const [formData, setFormData] = useState({
     name: '',
     location: '',
   });
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
+
   let history = useHistory();
   useEffect(() => {
-    setFormData({ name: user.profile.name, location: '' });
+    setFormData({
+      name: user.profile.name,
+      location: user.profile.location || '',
+      darkMode: user.profile.darkMode,
+    });
     setLoading(false);
-  }, [user.profile.name]);
+  }, [user.profile.name, user.profile.location, user.profile.darkMode]);
 
   const { name, location } = formData;
 
@@ -40,47 +33,42 @@ const UpdateProfile = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    dispatch(updateProfile({ name, location }, history));
+    dispatch(
+      updateProfile({ ...formData }, 'Profile Details updated', history)
+    );
   };
+
+  const updateProfileInputs = [
+    {
+      inputId: 'name',
+      inputLabel: 'Name',
+      inputName: 'name',
+      inputType: 'text',
+      inputValue: name,
+      autoFocus: true,
+    },
+    {
+      inputId: 'location',
+      inputLabel: 'Location',
+      inputName: 'location',
+      inputType: 'text',
+      inputValue: location,
+      autoFocus: false,
+    },
+  ];
 
   return loading ? (
     <Spinner></Spinner>
   ) : (
     <>
-      <form className={classes.form} onSubmit={(e) => onSubmitHandler(e)}>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="name"
-          label="Name"
-          name="name"
-          value={name}
+      <PageContainer pageTitle='Update Profile'>
+        <AuthForm
+          inputsToRender={updateProfileInputs}
+          submitButtonText='Update Profile'
+          onSubmit={(e) => onSubmitHandler(e)}
           onChange={(e) => onChangeHandler(e)}
-          autoFocus
         />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          id="location"
-          label="Location"
-          name="location"
-          value={location}
-          onChange={(e) => onChangeHandler(e)}
-          autoComplete="location"
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-        >
-          Create Profile
-        </Button>
-      </form>
+      </PageContainer>
     </>
   );
 };

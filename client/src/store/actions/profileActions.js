@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { showAlert } from './alertActions';
 import {
-  GET_PROFILE,
-  PROFILE_ERROR,
+  GET_PROFILE_SUCCESS,
+  GET_PROFILE_FAIL,
   UPDATE_PROFILE_FAIL,
   UPDATE_PROFILE_SUCCESS,
   CLEAR_PROFILE,
@@ -14,12 +14,12 @@ export const getCurrentProfile = () => async (dispatch) => {
   try {
     const res = await axios.get('/api/users/me');
     dispatch({
-      type: GET_PROFILE,
+      type: GET_PROFILE_SUCCESS,
       payload: res.data,
     });
   } catch (error) {
     dispatch({
-      type: PROFILE_ERROR,
+      type: GET_PROFILE_FAIL,
       payload: {
         msg: error.response.statusText,
         status: error.response.status,
@@ -28,23 +28,25 @@ export const getCurrentProfile = () => async (dispatch) => {
   }
 };
 
-export const updateProfile = ({ name, location }, history) => async (
-  dispatch,
+export const updateProfile = ({ ...formData }, updateType, history) => async (
+  dispatch
 ) => {
   const config = {
     headers: {
       'Content-Type': 'application/json',
     },
   };
-  const body = JSON.stringify({ name, location });
+  const body = JSON.stringify({ ...formData, initialProfileComplete: true });
+
   try {
     const res = await axios.post('/api/users/profile', body, config);
+
     dispatch({
       type: UPDATE_PROFILE_SUCCESS,
-      payload: res.data,
+      payload: res.data.profile,
     });
-    dispatch(showAlert(true, 'Profile updated!', 'success'));
-    history.push('/');
+    dispatch(showAlert(true, updateType || 'Profile updated!', 'success'));
+    if (history) history.push('/');
   } catch (error) {
     const errors = await error.response.data.errors;
     if (errors) {

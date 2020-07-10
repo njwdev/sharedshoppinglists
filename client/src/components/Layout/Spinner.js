@@ -12,7 +12,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CircularIndeterminate() {
   const classes = useStyles();
-
   return (
     <div className={classes.root}>
       <CircularProgress size={80} thickness={7.2} />

@@ -10,6 +10,6 @@ export function showAlert(open, text, type) {
 export function removeAlert(open, text, type) {
   return {
     type: REMOVE_ALERT,
-    payload: { open: false, text: '', type: '' },
+    payload: { open, text, type },
   };
 }

@@ -1,35 +1,50 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import NavBar from '../Navigation/NavBar';
-import Lists from '../Lists/Lists';
 import About from '../Pages/About';
 
-import NotFound from '../Pages/NotFound';
 import PrivateRoute from './PrivateRoute';
 import Dashboard from '../Dashboard/Dashboard';
+import Settings from '../Pages/Settings';
 
 import UpdateProfile from '../Profile/UpdateProfile';
-import DetailedListDisplay from '../Lists/DetailedListDisplay';
+import DetailedListView from '../Lists/ListViews/DetailedListView';
+import ActiveLists from '../Pages/ActiveLists';
+import PastLists from '../Pages/PastLists';
+
+import RedirectToNotFound from '../../utils/RedirectToNotFound';
 
 const Routes = () => {
   return (
     <>
       <NavBar />
       <Switch>
-        <PrivateRoute exact path="/about" component={About}></PrivateRoute>
-        <PrivateRoute exact path="/lists" component={Lists}></PrivateRoute>
+        <PrivateRoute exact path='/about' component={About}></PrivateRoute>
         <PrivateRoute
           exact
-          path="/lists/:id"
-          component={DetailedListDisplay}
-        ></PrivateRoute>
-        <PrivateRoute exact path="/editprofile" component={UpdateProfile} />
+          path='/lists/:id'
+          component={DetailedListView}></PrivateRoute>
         <PrivateRoute
           exact
-          path="/dashboard"
-          component={Dashboard}
-        ></PrivateRoute>
-        <Route component={NotFound}></Route>
+          path='/dashboard'
+          component={Dashboard}></PrivateRoute>
+        <PrivateRoute
+          exact
+          path='/active-lists'
+          component={ActiveLists}></PrivateRoute>
+        <PrivateRoute
+          exact
+          path='/past-lists'
+          component={PastLists}></PrivateRoute>
+        <PrivateRoute
+          exact
+          path='/settings'
+          component={Settings}></PrivateRoute>
+        <PrivateRoute
+          exact
+          path='/update-profile'
+          component={UpdateProfile}></PrivateRoute>
+        <Route component={RedirectToNotFound}></Route>
       </Switch>
     </>
   );

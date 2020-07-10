@@ -36,6 +36,14 @@ const UserSchema = new mongoose.Schema({
       type: String,
       //add default no image
     },
+    darkMode: {
+      type: Boolean,
+      default: false,
+    },
+    initialProfileComplete: {
+      type: Boolean,
+      default: false,
+    },
   },
 });
 

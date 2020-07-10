@@ -1,26 +1,36 @@
 import {
+  ADD_ITEM_TO_LIST_SUCCESS,
+  ADD_ITEM_TO_LIST_FAIL,
+  LIST_ITEM_SUCCESS_SUCCESS,
+  LIST_ITEM_SUCCESS_FAIL,
+  LIST_ITEM_PROBLEM_SUCCESS,
+  LIST_ITEM_PROBLEM_FAIL,
+  FETCH_ALL_LISTS_SUCCESS,
+  FETCH_ALL_LISTS_FAIL,
+  FETCH_LIST_SUCCESS,
+  FETCH_LIST_FAIL,
   CREATE_LIST_SUCCESS,
   CREATE_LIST_FAIL,
-  FETCH_LIST,
-  FETCH_ALL_LISTS,
-  FETCH_ALL_LISTS_FAIL,
-  FETCH_LIST_FAIL,
-  ADD_ITEM_TO_LIST,
-  ADD_ITEM_TO_LIST_FAIL,
-  UPDATE_LIST,
+  UPDATE_LIST_SUCCESS,
   UPDATE_LIST_FAIL,
-  DELETE_LIST,
+  DELETE_LIST_SUCCESS,
   DELETE_LIST_FAIL,
-  LIST_ITEM_SUCCESS,
-  LIST_ITEM_PROBLEM,
+  COMPLETE_LIST_SUCCESS,
+  COMPLETE_LIST_FAIL,
+  REACTIVATE_LIST_SUCCESS,
+  REACTIVATE_LIST_FAIL,
 } from './actionTypes';
 import { showAlert } from './alertActions';
 import axios from 'axios';
 
+//*********ALL LISTS****************
+
+// Desc: Fetches all lists for list overviews. Used in active lists and past lists via useLists() hook.
+
 export const fetchLists = () => async (dispatch) => {
   try {
     const res = await axios.get('/api/lists');
-    dispatch({ type: FETCH_ALL_LISTS, payload: res.data });
+    dispatch({ type: FETCH_ALL_LISTS_SUCCESS, payload: res.data });
   } catch (error) {
     const errors = await error.response.data.errors;
     if (errors) {
@@ -30,51 +40,14 @@ export const fetchLists = () => async (dispatch) => {
   }
 };
 
-// export const deleteList = (id) => {
-//   return {
-//     type: actionTypes.DELETE_LIST,
-//     payload: id,
-//   };
-// };
+//*********INDIVIDUAL LIST****************
 
-export const createList = ({ title, sharedWith }, history) => async (
-  dispatch,
-) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const body = JSON.stringify({ title, sharedWith });
-
-  try {
-    const res = await axios.post('/api/lists', body, config);
-
-    dispatch({
-      type: CREATE_LIST_SUCCESS,
-      payload: res.data,
-    });
-    dispatch(showAlert(true, 'List created!', 'success'));
-    // history.push('/lists');
-  } catch (error) {
-    const errors = await error.response.data.errors;
-    if (errors) {
-      errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
-    }
-
-    dispatch({
-      type: CREATE_LIST_FAIL,
-    });
-  }
-};
-
-//individual list
+//Desc: Fetches an individual list. Used for detailed list view via useList() hook.
 
 export const fetchList = (id) => async (dispatch) => {
   try {
     const res = await axios.get(`/api/lists/${id}`);
-    dispatch({ type: FETCH_LIST, payload: res.data });
+    dispatch({ type: FETCH_LIST_SUCCESS, payload: res.data });
   } catch (error) {
     const errors = await error.response.data.errors;
     if (errors) {
@@ -84,31 +57,33 @@ export const fetchList = (id) => async (dispatch) => {
   }
 };
 
-export const addListItem = (id, { itemName, quantity }) => async (dispatch) => {
+// Desc: Creates a new list. Used in active lists.
+export const createList = ({ title, sharedWith }) => async (dispatch) => {
   const config = {
     headers: {
       'Content-Type': 'application/json',
     },
   };
-  const body = JSON.stringify({ itemName, quantity });
-
+  const body = JSON.stringify({ title, sharedWith });
   try {
-    const res = await axios.put(`/api/lists/${id}`, body, config);
-    dispatch({ type: ADD_ITEM_TO_LIST, payload: res.data });
-    dispatch(showAlert(true, 'Item added to your list!', 'success'));
+    const res = await axios.post('/api/lists', body, config);
+    dispatch({
+      type: CREATE_LIST_SUCCESS,
+      payload: res.data,
+    });
+    dispatch(showAlert(true, 'List created!', 'success'));
   } catch (error) {
     const errors = await error.response.data.errors;
     if (errors) {
       errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
     }
-
     dispatch({
-      type: ADD_ITEM_TO_LIST_FAIL,
+      type: CREATE_LIST_FAIL,
     });
   }
 };
 
-//update list title
+//Desc: Updates the list title. Used in detailed list view.
 
 export const updateList = (id, { title }, history) => async (dispatch) => {
   const config = {
@@ -121,7 +96,7 @@ export const updateList = (id, { title }, history) => async (dispatch) => {
   try {
     const res = await axios.put(`/api/lists/${id}/edit-title`, body, config);
     dispatch({
-      type: UPDATE_LIST,
+      type: UPDATE_LIST_SUCCESS,
       payload: res.data,
     });
     dispatch(showAlert(true, 'List name updated!', 'success'));
@@ -137,32 +112,143 @@ export const updateList = (id, { title }, history) => async (dispatch) => {
   }
 };
 
-export const listItemSuccess = (id, itemId, userName, undo) => async (
-  dispatch,
+//Desc: Completes the list, which converts it from an active list to a past list.
+//Used in both list overview and detailed list view.
+
+export const completeList = (id, history) => async (dispatch) => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  const body = JSON.stringify({ complete: true });
+
+  try {
+    const res = await axios.put(`/api/lists/${id}/complete-list`, body, config);
+    dispatch({
+      type: COMPLETE_LIST_SUCCESS,
+      payload: res.data,
+    });
+    dispatch(showAlert(true, 'List archived!', 'info'));
+    history.push('/');
+  } catch (error) {
+    const errors = await error.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
+    }
+    dispatch({
+      type: COMPLETE_LIST_FAIL,
+    });
+  }
+};
+
+//Desc: Reactivates list - moving it from past list to active list.
+//Used in completed list overview and completed detailed list view
+
+export const reactivateList = (id, history) => async (dispatch) => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  const body = JSON.stringify({ complete: false });
+
+  try {
+    const res = await axios.put(
+      `/api/lists/${id}/reactivate-list`,
+      body,
+      config
+    );
+    dispatch({
+      type: REACTIVATE_LIST_SUCCESS,
+      payload: res.data,
+    });
+    dispatch(showAlert(true, 'List Reactivated!', 'info'));
+    history.push('/');
+  } catch (error) {
+    const errors = await error.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
+    }
+    dispatch({
+      type: REACTIVATE_LIST_FAIL,
+    });
+  }
+};
+
+//Desc: Deletes list from database.
+//Used in completed list overview and completed detailed list view
+
+export const deleteList = (id, history) => async (dispatch) => {
+  try {
+    await axios.delete(`/api/lists/${id}`);
+    dispatch({ type: DELETE_LIST_SUCCESS, payload: id });
+    dispatch(showAlert(true, 'List deleted!', 'success'));
+    const { pathname } = history.location;
+
+    history.go(pathname);
+  } catch (error) {
+    const errors = await error.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
+    }
+    dispatch({ type: DELETE_LIST_FAIL });
+  }
+};
+
+//*********LIST ITEMS****************
+
+//Desc: Adds an item to an individual list. Used in AddItem component.
+
+export const addListItem = (id, userName, { itemName, quantity }) => async (
+  dispatch
 ) => {
   const config = {
     headers: {
       'Content-Type': 'application/json',
     },
   };
+  const body = JSON.stringify({ userName, itemName, quantity });
+  try {
+    const res = await axios.put(`/api/lists/${id}`, body, config);
+    dispatch({ type: ADD_ITEM_TO_LIST_SUCCESS, payload: res.data });
+    dispatch(showAlert(true, 'Item added to your list!', 'success'));
+  } catch (error) {
+    const errors = await error.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
+    }
+    dispatch({
+      type: ADD_ITEM_TO_LIST_FAIL,
+    });
+  }
+};
 
+//Desc: Puts a list item into the success category, or with undo moves it back to the
+// items to get category. Used in ListItems component.
+
+export const listItemSuccess = (id, itemId, userName, undo) => async (
+  dispatch
+) => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
   let body;
-
   if (undo) body = JSON.stringify({ success: false, name: userName });
   else body = JSON.stringify({ success: true, name: userName });
-
   try {
-    console.log(undo);
     const res = await axios.put(
       `/api/lists/${id}/${itemId}/success`,
       body,
-      config,
+      config
     );
-    dispatch({ type: LIST_ITEM_SUCCESS, payload: res.data });
+    dispatch({ type: LIST_ITEM_SUCCESS_SUCCESS, payload: res.data });
     dispatch(
       undo
         ? showAlert(true, 'Item restored to list', 'success')
-        : showAlert(true, 'Item Got!', 'success'),
+        : showAlert(true, 'Item Got!', 'success')
     );
   } catch (error) {
     const errors = await error.response.data.errors;
@@ -170,17 +256,20 @@ export const listItemSuccess = (id, itemId, userName, undo) => async (
       errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
     }
     dispatch({
-      type: UPDATE_LIST_FAIL,
+      type: LIST_ITEM_SUCCESS_FAIL,
     });
   }
 };
+
+//Desc: Puts a list item into the problem category and allows user to give a reason
+//for problem. Used in ListItems component.
 
 export const listItemProblem = (
   id,
   itemId,
   userName,
   reason,
-  optionalNote,
+  optionalNote
 ) => async (dispatch) => {
   const config = {
     headers: {
@@ -195,14 +284,13 @@ export const listItemProblem = (
     optionalNote: optionalNote,
   });
 
-  console.log(body);
   try {
     const res = await axios.put(
       `/api/lists/${id}/${itemId}/list-item-problem`,
       body,
-      config,
+      config
     );
-    dispatch({ type: LIST_ITEM_PROBLEM, payload: res.data });
+    dispatch({ type: LIST_ITEM_PROBLEM_SUCCESS, payload: res.data });
     dispatch(showAlert(true, 'Problem noted!', 'success'));
   } catch (error) {
     const errors = await error.response.data.errors;
@@ -210,27 +298,7 @@ export const listItemProblem = (
       errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
     }
     dispatch({
-      type: UPDATE_LIST_FAIL,
+      type: LIST_ITEM_PROBLEM_FAIL,
     });
-  }
-};
-
-export const removeSuccess = () => async (dispatch) => {
-  try {
-  } catch (error) {}
-};
-
-export const deleteList = (id, history) => async (dispatch) => {
-  try {
-    await axios.delete(`/api/lists/${id}`);
-    dispatch({ type: DELETE_LIST, payload: id });
-    dispatch(showAlert(true, 'List deleted!', 'success'));
-    history.push('/');
-  } catch (error) {
-    const errors = await error.response.data.errors;
-    if (errors) {
-      errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
-    }
-    dispatch({ type: DELETE_LIST_FAIL });
   }
 };

@@ -1,29 +1,21 @@
-import React, { useState } from 'react';
-// import clsx from 'clsx';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../store/actions/authActions';
+import { updateProfile } from '../../store/actions/profileActions';
 import { makeStyles } from '@material-ui/core/styles';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-// import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import useScrollTrigger from '@material-ui/core/useScrollTrigger';
-import Slide from '@material-ui/core/Slide';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import PropTypes from 'prop-types';
+import Brightness3 from '@material-ui/icons/Brightness3';
+import WbSunny from '@material-ui/icons/WbSunny';
 import LogoAvatar from '../Layout/LogoAvatar';
-import Add from '@material-ui/icons/Add';
-import FormatListBulletedRounded from '@material-ui/icons/FormatListBulletedRounded';
+import { useNumberOfLists } from '../../hooks/useLists';
+import HideOnScroll from './HideOnScroll';
+import NavSideDrawer from './NavSideDrawer';
+import UserMenu from './UserMenu';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,46 +27,24 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
-  navLink: {
-    textDecoration: 'none',
-    color: 'inherit',
-  },
-
   title: { flexGrow: 1 },
 }));
 
-const HideOnScroll = ({ children }) => {
-  const trigger = useScrollTrigger();
-  return (
-    <Slide appear={false} direction="down" in={!trigger}>
-      {children}
-    </Slide>
-  );
-};
-
-HideOnScroll.propTypes = {
-  children: PropTypes.element.isRequired,
-};
-
 const NavBar = (props) => {
   const classes = useStyles();
-  const { loading, isAuth } = useSelector((state) => state.auth);
+  const [activeListsNumber, pastListsNumber] = useNumberOfLists();
+  const [profileData, setProfileData] = useState({});
+  const [isDarkMode, setIsDarkMode] = useState();
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
   const [openSideDrawer, setOpenSideDrawer] = useState(false);
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const logoutHandler = () => {
-    dispatch(logout());
-  };
+  useEffect(() => {
+    if (user) {
+      setProfileData(user.profile);
+      setIsDarkMode(profileData.darkMode);
+    }
+  }, [user, profileData.darkMode]);
 
   const toggleDrawer = (openSideDrawer) => (event) => {
     if (
@@ -83,117 +53,77 @@ const NavBar = (props) => {
     ) {
       return;
     }
-
     setOpenSideDrawer(!openSideDrawer);
   };
 
-  const drawerData = [
-    {
-      icon: <Add />,
-      text: 'Add List',
-      link: '/create-list',
-    },
-    {
-      icon: <FormatListBulletedRounded />,
-      text: 'Active Lists',
-      link: '/lists',
-    },
-    {
-      icon: (
-        <FormatListBulletedRounded
-          style={{
-            opacity: '0.2',
-          }}
-        />
-      ),
-      text: 'Past Lists',
-    },
-  ];
+  let darkModeMsg;
 
+  isDarkMode
+    ? (darkModeMsg = 'Light mode activated')
+    : (darkModeMsg = 'Dark Mode activated');
+
+  const toggleDarkMode = async () => {
+    await dispatch(
+      updateProfile({ ...profileData, darkMode: !isDarkMode }, darkModeMsg)
+    );
+  };
+
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
   return (
     <div className={classes.root}>
       <HideOnScroll {...props}>
         <AppBar>
           <Toolbar>
             <IconButton
-              edge="start"
+              edge='start'
               className={classes.menuButton}
-              color="inherit"
-              aria-label="menu"
-              onClick={toggleDrawer(false)}
-            >
+              color='inherit'
+              aria-label='menu'
+              onClick={toggleDrawer(false)}>
               <MenuIcon />
             </IconButton>
-            <Drawer
-              anchor={'left'}
-              open={openSideDrawer}
-              onClose={toggleDrawer(true)}
-            >
-              <List>
-                <div>
-                  {drawerData.map((item, index) => (
-                    <div key={item.text}>
-                      <Link className={classes.navLink} to={item.link}>
-                        <ListItem button>
-                          <ListItemIcon>{item.icon}</ListItemIcon>
-                          <ListItemText primary={item.text} />
-                        </ListItem>
-                      </Link>
-                      <Divider />
-                    </div>
-                  ))}
-                </div>
-              </List>
-            </Drawer>
+            <NavSideDrawer
+              toggleDrawer={() => toggleDrawer(true)}
+              activeListsNumber={activeListsNumber}
+              pastListsNumber={pastListsNumber}
+              openSideDrawer={openSideDrawer}
+              setOpenSideDrawer={() => setOpenSideDrawer(false)}
+            />
+
             <div className={classes.title}>
-              <NavLink className={classes.navLink} to="/dashboard">
+              <NavLink className={classes.navLink} to='/dashboard'>
                 <LogoAvatar className={classes.title} />
               </NavLink>
             </div>
 
-            {!loading && isAuth && (
-              <div>
-                <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleMenu}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={open}
-                  onClose={handleClose}
-                >
-                  <MenuItem onClick={handleClose}>
-                    <NavLink className={classes.navLink} to="/about">
-                      About
-                    </NavLink>
-                  </MenuItem>
-                  <MenuItem onClick={handleClose}>Settings</MenuItem>
-                  <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-                </Menu>
-              </div>
-            )}
+            <div style={{ display: 'flex' }}>
+              {user && user.profile.initialProfileComplete ? (
+                user && isDarkMode === false ? (
+                  <IconButton onClick={toggleDarkMode} color='inherit'>
+                    <Brightness3 />
+                  </IconButton>
+                ) : (
+                  <IconButton onClick={toggleDarkMode} color='inherit'>
+                    <WbSunny />
+                  </IconButton>
+                )
+              ) : null}
+
+              <UserMenu logoutHandler={logoutHandler} />
+            </div>
           </Toolbar>
         </AppBar>
       </HideOnScroll>
-      {/* Ensures no text behing toolbar */}
+      {/* Ensures no text behind toolbar */}
       <Toolbar />
     </div>
   );
+};
+
+NavBar.propTypes = {
+  children: PropTypes.node,
 };
 
 export default NavBar;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
-
 import logo from '../../assets/logos/SSL_IMAGE.png';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,9 +21,8 @@ const LogoAvatar = () => {
       <Avatar
         src={logo}
         imgProps={{ style: { objectFit: 'contain' } }}
-        variant="rounded"
-        className={classes.avatar}
-      ></Avatar>
+        variant='rounded'
+        className={classes.avatar}></Avatar>
     </div>
   );
 };

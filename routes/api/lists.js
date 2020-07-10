@@ -6,11 +6,10 @@ const auth = require('../../middleware/auth');
 const List = require('../../models/List');
 
 const User = require('../../models/User');
-const Profile = require('../../models/Profile');
 
-// @route POST api/lists
-// @desc Create a list
-// @access private
+// Route: POST api/lists
+// Desc: Create a list
+// Access: Private
 
 router.post(
   '/',
@@ -24,7 +23,7 @@ router.post(
     try {
       const user = await User.findById(req.user.id).select('-password');
       const newList = new List({
-        creator: req.user.id,
+        creator: { id: req.user.id, name: req.user.name },
         title: req.body.title,
         avatar: user.avatar,
         user: req.user.id,
@@ -37,7 +36,7 @@ router.post(
       if (sharedWith[0].userId.length) {
         await newList.listUsers.unshift(
           { userId: req.user.id, name: user.profile.name },
-          ...sharedWith,
+          ...sharedWith
         );
       } else {
         await newList.listUsers.unshift({
@@ -52,14 +51,18 @@ router.post(
       console.error(error.message);
       res.status(500).send('Server Error');
     }
-  },
+  }
 );
+
+// Route: GET /api/lists
+// Desc: Gets all of the lists that are associated with a user
+// Access: Private
 
 router.get('/', auth, async (req, res) => {
   try {
     const user = req.user.id;
 
-    //Gets all lists by logged in number @TODO - will find by listUsers
+    //Gets all lists by logged in number
     const lists = await List.find({
       'listUsers.userId': user,
     }).sort({
@@ -73,9 +76,9 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// @GET api/lists
-//@Desc Get list by id
-//@Access Private
+//Route: GET api/lists/:id
+//Desc: Get an individual list by id
+//Access: Private
 
 router.get('/:id', auth, async (req, res) => {
   try {
@@ -92,21 +95,17 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-// @DELETE api/lists
-//@Desc delete list by id
-//@Access Private
+//Route: DELETE api/lists
+//Desc: delete list by id
+//Access: Private
 
 router.delete('/:id', auth, async (req, res) => {
   try {
     const list = await List.findById(req.params.id);
-    //auth check
     if (!list) {
       res.status(404).json({ msg: 'List not found' });
     }
 
-    if (list.creator.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'User not authorized' });
-    }
     await list.remove();
 
     res.json({ msg: `List with title: ${list.title} removed` });
@@ -119,9 +118,9 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-//@PUT api/lists/:id
-//@desc Add list item to list
-//@access - Private - only listUsers can access
+//Route: PUT api/lists/:id
+//Desc: Add a list item to list
+//Access: Private
 
 router.put(
   '/:id',
@@ -133,15 +132,10 @@ router.put(
   async (req, res) => {
     try {
       const list = await List.findById(req.params.id);
-      //@TODO - Check that user has permission to add listItem
-      // if (list.creator.toString() !== req.user.id) {
-      //   return res.status(401).json({ msg: 'User not authorized' });
-      // }
-
       const newListItem = new Object({
         itemName: req.body.itemName,
         quantity: req.body.quantity,
-        addedBy: req.user.id,
+        addedBy: { id: req.user.id, name: req.body.userName },
         extraInfo: req.body.extraInfo,
       });
 
@@ -153,13 +147,12 @@ router.put(
       console.error(error.message);
       res.status(500).send('Server Error');
     }
-  },
+  }
 );
 
-//@PUT api/lists/:id/edit-title
-//@desc Edit the list title
-//@access - Private - only listUsers can access
-//@TODO - refactor this for other fields
+//Route: PUT api/lists/:id/edit-title
+//Desc: Edit the list title
+//Access: Private
 
 router.put(
   '/:id/edit-title',
@@ -172,31 +165,66 @@ router.put(
         {
           $set: { title: req.body.title },
         },
-        { new: true },
+        { new: true }
       );
       res.send(list);
-
-      //@TODO - Check that user has permission to add listItem
-      // if (list.creator.toString() !== req.user.id) {
-      //   return res.status(401).json({ msg: 'User not authorized' });
-      // }
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error');
     }
-  },
+  }
 );
 
-//@PUT api/lists/:id/:itemId/success
-//@desc set list item success
-//@access - Private - only listUsers can access
+//Route: PUT /api/lists/:id/complete-list
+//Desc: Marks list as complete
+//Access: Private
+
+router.put('/:id/complete-list', auth, async (req, res) => {
+  try {
+    const list = await List.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        $set: { complete: { ...req.body, completionDate: Date.now() } },
+      },
+      { new: true }
+    );
+    res.send(list);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+//Route: PUT /api/lists/:id/reactivate-list
+//Desc: Reactivates a list (marks as not complete)
+//Access: Private
+
+router.put('/:id/reactivate-list', auth, async (req, res) => {
+  try {
+    const list = await List.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        $set: { complete: { ...req.body } },
+      },
+      { new: true }
+    );
+    res.send(list);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+//Route: PUT api/lists/:id/:itemId/success
+//Desc: sets a list item as success
+//Access: Private
 
 router.put('/:id/:itemId/success', auth, async (req, res) => {
   try {
     const list = await List.findById(req.params.id);
 
     const updatedListItem = await list.listItems.filter(
-      (el) => el.id === req.params.itemId,
+      (el) => el.id === req.params.itemId
     );
     //Removes prev fail info, if applicable
     updatedListItem[0].fail = { fail: false };
@@ -216,16 +244,18 @@ router.put('/:id/:itemId/success', auth, async (req, res) => {
   }
 });
 
+//Route: PUT /api/lists/:id/:itemId/list-item-problem
+//Desc: Sets a problem with a list item
+//Access: Private
+
 router.put('/:id/:itemId/list-item-problem', auth, async (req, res) => {
-  console.log(req.body);
   try {
     const list = await List.findById(req.params.id);
     const updatedListItem = await list.listItems.filter(
-      (el) => el.id === req.params.itemId,
+      (el) => el.id === req.params.itemId
     );
     updatedListItem[0].fail = req.body;
     updatedListItem[0].fail.failDate = Date.now();
-    console.log(updatedListItem);
     await list.save();
     res.send(list);
   } catch (error) {
@@ -233,61 +263,5 @@ router.put('/:id/:itemId/list-item-problem', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-
-//@put api/lists  @TODO - could change to delete?
-//@desc Remove a list item from the list
-//@access - Private - only listUsers can access
-
-router.put('/:id/:itemId', auth, async (req, res) => {
-  try {
-    const list = await List.findById(req.params.id);
-
-    const newListItems = await list.listItems.filter(
-      (el) => el.id !== req.params.itemId,
-    );
-
-    const itemToRemove = await list.listItems.filter(
-      (el) => el.id === req.params.itemId,
-    );
-
-    const itemToRemoveName = await itemToRemove[0].itemName;
-
-    list.listItems = newListItems;
-
-    if (!list) {
-      res.status(404).json({ msg: 'List Item Not found' });
-    }
-
-    if (list.creator.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'User not authorized' });
-    }
-    await list.save();
-
-    res.json({
-      msg: `List item ${itemToRemoveName} removed from list with title: ${list.title} removed`,
-    });
-  } catch (error) {
-    console.error(error.message);
-    if (error.kind === 'ObjectId') {
-      res.status(404).json({ msg: 'list not found' });
-    }
-    res.status(500).send('Server Error');
-  }
-});
-
-//@POST api/lists/:id
-//@desc Edit List settings
-//@access - Private - only listUsers can access
-
-//@POST edit list item api/lists/:id/:itemId
-//@desc Edit List item - name quantity - extraInfo
-//@access - Private - only listUsers can access
-
-//Questions - How to report success / failure of list item
-
-//Find item ID -
-//Make success true
-//Give option for note
-//include who by
 
 module.exports = router;

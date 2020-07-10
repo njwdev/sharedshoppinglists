@@ -11,11 +11,11 @@ const middleware = [thunk];
 const store = createStore(
   rootReducer,
   initialState,
-  composeWithDevTools(applyMiddleware(...middleware)),
+  composeWithDevTools(applyMiddleware(...middleware))
 );
 
 let currentState = {
-  auth: { token: null, isAuthenticated: null, loading: true, user: null },
+  user: { token: null, isAuthenticated: null, loading: true, user: null },
 };
 
 store.subscribe(() => {
@@ -23,8 +23,8 @@ store.subscribe(() => {
   let previousState = currentState;
   currentState = store.getState();
   // if the token changes set the value in localStorage and axios headers
-  if (previousState.auth.token !== currentState.auth.token) {
-    const token = currentState.auth.token;
+  if (previousState.user.token !== currentState.user.token) {
+    const token = currentState.user.token;
     setAuthToken(token);
   }
 });

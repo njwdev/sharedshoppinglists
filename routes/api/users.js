@@ -4,16 +4,13 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
-const config = require('config');
 const auth = require('../../middleware/auth');
 
 const User = require('../../models/User');
 
-//@route POST api/users
-
-//@dec Test route
-
-//@access Public
+//Route: POST /api/users/
+//Desc: Signs up and creates new user
+//Access: Public
 
 router.post(
   '/',
@@ -22,7 +19,7 @@ router.post(
     check('email', 'Please include a valid email').isEmail(),
     check(
       'password',
-      'Please enter a password with 6 or more characters',
+      'Please enter a password with 6 or more characters'
     ).isLength({ min: 6 }),
   ],
   async (req, res) => {
@@ -31,7 +28,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req.body;
+    const { name, email, password, darkMode } = req.body;
 
     //See if user exists
 
@@ -50,6 +47,7 @@ router.post(
       user = new User({
         profile: {
           name: name,
+          darkMode: darkMode,
         },
         email,
         avatar,
@@ -70,12 +68,12 @@ router.post(
 
       jwt.sign(
         payload,
-        config.get('jwtSecret'),
+        process.env.JWT_SECRET,
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
           res.json({ token });
-        },
+        }
       );
 
       //Encrypt password using bcrypt
@@ -84,12 +82,12 @@ router.post(
       console.error(err);
       res.status(500).send('Server Error');
     }
-  },
+  }
 );
 
-// @route GET
-// @desc Get current user's profile
-// @access Private
+// Route: GET /me
+// Desc: Get current user's profile
+// Access: Private
 
 router.get('/me', auth, async (req, res) => {
   try {
@@ -117,7 +115,9 @@ router.get('/profiles', async (req, res) => {
   }
 });
 
-//Update user profile
+//Route: POST /profile
+//Desc: Update profile
+//Access: Private
 
 router.post(
   '/profile',
@@ -128,13 +128,22 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { name, location, image } = req.body;
-    // @todo integrate image
+
+    const {
+      name,
+      location,
+      darkMode,
+      image,
+      initialProfileComplete,
+    } = req.body;
 
     const profileFields = {};
+    if (initialProfileComplete)
+      profileFields.initialProfileComplete = initialProfileComplete;
     if (location) profileFields.location = location;
     if (name) profileFields.name = name;
     if (image) profileFields.image = image;
+    if (darkMode) profileFields.darkMode = darkMode;
 
     try {
       let profile = await User.findOneAndUpdate(
@@ -142,13 +151,13 @@ router.post(
         {
           $set: { profile: profileFields },
         },
-        { new: true },
+        { new: true }
       );
       res.send(profile);
     } catch (err) {
       console.error(err.message);
     }
-  },
+  }
 );
 
 module.exports = router;
