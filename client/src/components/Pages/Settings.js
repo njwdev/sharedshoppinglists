@@ -61,8 +61,10 @@ const Settings = () => {
   };
 
   const handleBlur = () => {
-    setEditLocation(false);
-    setEditName(false);
+    setTimeout(() => {
+      setEditLocation(false);
+      setEditName(false);
+    }, 200);
   };
 
   const settingsData = [
