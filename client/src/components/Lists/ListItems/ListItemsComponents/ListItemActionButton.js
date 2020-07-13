@@ -5,7 +5,11 @@ import IconButton from '@material-ui/core/IconButton';
 const ListItemActionButton = ({ disabled, icon, onClick }) => {
   return (
     <>
-      <IconButton disabled={disabled} size='small' onClick={onClick}>
+      <IconButton
+        color='inherit'
+        disabled={disabled}
+        size='small'
+        onClick={onClick}>
         {icon}
       </IconButton>
     </>

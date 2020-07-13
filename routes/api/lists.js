@@ -226,8 +226,27 @@ router.put('/:id/:itemId/success', auth, async (req, res) => {
     const updatedListItem = await list.listItems.filter(
       (el) => el.id === req.params.itemId
     );
+
+    const listItemAlreadyEdited = updatedListItem[0].success.success;
+
+    if (!req.body.undo && listItemAlreadyEdited) {
+      res.status(400).json({
+        errors: [
+          {
+            msg:
+              'Item has already been changed by another user. Refresh your list.',
+          },
+        ],
+      });
+    }
+
+    // if (updatedListItem[0].success.success)
+    //   throw new Error(
+    //     'Item has already been changed by another user. Refresh your list.'
+    //   );
     //Removes prev fail info, if applicable
     updatedListItem[0].fail = { fail: false };
+
     if (req.body.success === true) {
       updatedListItem[0].success = req.body;
       updatedListItem[0].success.dateGot = Date.now();
@@ -239,6 +258,7 @@ router.put('/:id/:itemId/success', auth, async (req, res) => {
     await list.save();
     res.send(list);
   } catch (error) {
+    console.log(error.message);
     console.error(error.message);
     res.status(500).send('Server Error');
   }
@@ -256,6 +276,25 @@ router.put('/:id/:itemId/list-item-problem', auth, async (req, res) => {
     );
     updatedListItem[0].fail = req.body;
     updatedListItem[0].fail.failDate = Date.now();
+    await list.save();
+    res.send(list);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+//Route: PUT api/lists/:id/:itemId/delete
+//Desc: Removes a list item from the listItems array
+//Access: Private
+
+router.put('/:id/:itemId/delete', auth, async (req, res) => {
+  try {
+    const list = await List.findById(req.params.id);
+    const updatedItems = await list.listItems.filter(
+      (el) => el.id !== req.params.itemId
+    );
+    list.listItems = updatedItems;
     await list.save();
     res.send(list);
   } catch (error) {

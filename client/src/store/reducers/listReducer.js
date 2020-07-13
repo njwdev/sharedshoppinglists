@@ -1,6 +1,8 @@
 import {
   ADD_ITEM_TO_LIST_SUCCESS,
   ADD_ITEM_TO_LIST_FAIL,
+  LIST_ITEM_DELETE_SUCCESS,
+  LIST_ITEM_DELETE_FAIL,
   LIST_ITEM_SUCCESS_SUCCESS,
   LIST_ITEM_SUCCESS_FAIL,
   LIST_ITEM_PROBLEM_SUCCESS,
@@ -111,8 +113,16 @@ export default function (state = initialState, action) {
       };
     }
 
+    case LIST_ITEM_DELETE_SUCCESS: {
+      return {
+        ...state,
+        list: payload,
+      };
+    }
+
     case ADD_ITEM_TO_LIST_FAIL:
     case LIST_ITEM_SUCCESS_FAIL:
+    case LIST_ITEM_DELETE_FAIL:
     case LIST_ITEM_PROBLEM_FAIL: {
       return {
         ...state,

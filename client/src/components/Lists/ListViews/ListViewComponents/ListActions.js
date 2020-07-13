@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import UndoOutlined from '@material-ui/icons/UndoOutlined';
 import DoneOutlined from '@material-ui/icons/DoneOutlined';
 import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
+//@Todo add refresh list functionality
+import RefreshOutlined from '@material-ui/icons/RefreshOutlined';
 import EditOutlined from '@material-ui/icons/EditOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import ListActionIconButton from './ListActionIconButton';
@@ -25,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
 const ListActions = ({
   list,
   editOpen,
+  refreshListButton,
+  refreshListHandler,
   editTitleButton,
   deleteListButton,
   reactivateListButton,
@@ -46,8 +50,18 @@ const ListActions = ({
   };
   return (
     <div className={classes.actionIcons}>
-      {/* &TODO - add edit input here */}
-
+      {refreshListButton && (
+        <ListActionIconButton
+          title='Refresh list'
+          ariaLabel='refresh list'
+          icon={
+            <RefreshOutlined
+              className={classes.icon}
+              onClick={refreshListHandler}
+            />
+          }
+        />
+      )}
       {editTitleButton && (
         <ListActionIconButton
           title='Edit list title'
@@ -97,16 +111,6 @@ const ListActions = ({
         />
       )}
 
-      {/* {editOpen ? (
-        <EditListTitle
-          edit={editOpen}
-          onChange
-          onSubmit
-          //   editFormData
-          listTitle={list.title}
-        />
-      ) : null} */}
-
       {deleteDialogOpen ? (
         <DeleteList
           dialogOpen={deleteDialogOpen}
@@ -138,6 +142,8 @@ const ListActions = ({
 ListActions.propTypes = {
   list: PropTypes.object.isRequired,
   editTitleButton: PropTypes.bool,
+  refreshListButton: PropTypes.bool.isRequired,
+  refreshListHandler: PropTypes.func.isRequired,
   deleteListButton: PropTypes.bool.isRequired,
   reactivateListButton: PropTypes.bool.isRequired,
   completeListButton: PropTypes.bool.isRequired,
