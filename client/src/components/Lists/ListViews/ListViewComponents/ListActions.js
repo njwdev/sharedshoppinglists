@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import UndoOutlined from '@material-ui/icons/UndoOutlined';
 import DoneOutlined from '@material-ui/icons/DoneOutlined';
 import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
-//@Todo add refresh list functionality
 import RefreshOutlined from '@material-ui/icons/RefreshOutlined';
 import EditOutlined from '@material-ui/icons/EditOutlined';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,7 +10,6 @@ import ListActionIconButton from './ListActionIconButton';
 import DeleteList from './DeleteList';
 import CompleteList from './CompleteList';
 import ReactivateList from './ReactivateList';
-// import EditListTitle from './ListTitle';
 
 const useStyles = makeStyles((theme) => ({
   actionIcons: {
@@ -142,8 +140,8 @@ const ListActions = ({
 ListActions.propTypes = {
   list: PropTypes.object.isRequired,
   editTitleButton: PropTypes.bool,
-  refreshListButton: PropTypes.bool.isRequired,
-  refreshListHandler: PropTypes.func.isRequired,
+  refreshListButton: PropTypes.bool,
+  refreshListHandler: PropTypes.func,
   deleteListButton: PropTypes.bool.isRequired,
   reactivateListButton: PropTypes.bool.isRequired,
   completeListButton: PropTypes.bool.isRequired,
