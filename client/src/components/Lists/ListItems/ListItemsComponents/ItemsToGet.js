@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReportProblemRounded from '@material-ui/icons/ReportProblemRounded';
 import Done from '@material-ui/icons/Done';
-import MoreVert from '@material-ui/icons/MoreVert';
+import DeleteRounded from '@material-ui/icons/DeleteRounded';
 import ListItemProblemDialog from './ListItemProblemDialog';
 import { useTheme } from '@material-ui/core/styles';
 import ListItemActionButton from '../ListItemsComponents/ListItemActionButton';
@@ -11,6 +11,7 @@ import ListItemsTabPanel from './ListItemsTabPanel';
 const ItemsToGet = ({
   completedList,
   successHandler,
+  deleteHandler,
   dialogOpenHandler,
   listId,
   itemId,
@@ -31,7 +32,11 @@ const ItemsToGet = ({
       onClick: () => dialogOpenHandler(item),
       id: '2',
     },
-    { icon: <MoreVert />, disabled: true, id: '3' },
+    {
+      icon: <DeleteRounded />,
+      onClick: () => deleteHandler(item),
+      id: '3',
+    },
   ];
 
   return (

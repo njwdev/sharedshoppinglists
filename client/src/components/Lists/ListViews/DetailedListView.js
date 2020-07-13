@@ -3,6 +3,7 @@ import {
   deleteList,
   completeList,
   reactivateList,
+  fetchList,
 } from '../../../store/actions/listActions';
 import { useSelector, useDispatch } from 'react-redux';
 import Spinner from '../../Layout/Spinner';
@@ -29,6 +30,11 @@ const DetailedListView = () => {
   const [list, loading] = useList();
   //Determine whether list is completed
   const completedList = list && list.complete && list.complete.complete;
+
+  //Refreshes list by fetching list again to check if updates have been made
+  const refreshListHandler = () => {
+    dispatch(fetchList(id, true));
+  };
 
   const handleDeleteList = (id) => {
     dispatch(deleteList(id, history));
@@ -61,6 +67,8 @@ const DetailedListView = () => {
             list={list}
             editOpen={() => setEditOpen(!editOpen)}
             editTitleButton={completedList ? false : true}
+            refreshListButton={true}
+            refreshListHandler={refreshListHandler}
             deleteListButton={true}
             reactivateListButton={completedList ? true : false}
             completeListButton={completedList ? false : true}

@@ -10,7 +10,10 @@ import TabContext from '@material-ui/lab/TabContext';
 import TabList from '@material-ui/lab/TabList';
 import TabPanel from '@material-ui/lab/TabPanel';
 // import SwipeableViews from 'react-swipeable-views';
-import { listItemSuccess } from '../../../store/actions/listActions';
+import {
+  listItemSuccess,
+  listItemDelete,
+} from '../../../store/actions/listActions';
 import Spinner from '../../Layout/Spinner';
 import ListItemsColumnTitles from './ListItemsComponents/ListItemsColumnTitles';
 import ItemsToGet from './ListItemsComponents/ItemsToGet';
@@ -50,6 +53,12 @@ const ListItems = ({ userName, listItems, listId, completedList }) => {
   const successHandler = (id, undo) => {
     const listItemId = id;
     dispatch(listItemSuccess(listId, listItemId, userName, undo));
+    setLoading(true);
+  };
+
+  const deleteHandler = (id) => {
+    const listItemId = id;
+    dispatch(listItemDelete(listId, listItemId));
     setLoading(true);
   };
 
@@ -120,6 +129,7 @@ const ListItems = ({ userName, listItems, listId, completedList }) => {
                   key={item._id}
                   completedList={completedList}
                   successHandler={successHandler}
+                  deleteHandler={deleteHandler}
                   dialogOpenHandler={dialogOpenHandler}
                   listId={listId}
                   itemId={itemId}
@@ -143,6 +153,7 @@ const ListItems = ({ userName, listItems, listId, completedList }) => {
                 <ProblemItems
                   key={item._id}
                   completedList={completedList}
+                  deleteHandler={deleteHandler}
                   successHandler={successHandler}
                   listId={listId}
                   reason={item.fail.reason}
@@ -161,6 +172,7 @@ const ListItems = ({ userName, listItems, listId, completedList }) => {
             {successfulItemsData.length ? (
               successfulItemsData.map((item) => (
                 <SuccessfulItems
+                  deleteHandler={deleteHandler}
                   key={item._id}
                   completedList={completedList}
                   successHandler={successHandler}

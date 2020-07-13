@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MoreVert from '@material-ui/icons/MoreVert';
+import Delete from '@material-ui/icons/Delete';
 import Undo from '@material-ui/icons/Undo';
 import { useTheme } from '@material-ui/core/styles';
 import ListItemActionButton from '../ListItemsComponents/ListItemActionButton';
@@ -9,6 +9,7 @@ import ListItemsTabPanel from './ListItemsTabPanel';
 const SuccessfulItems = ({
   completedList,
   successHandler,
+  deleteHandler,
   itemName,
   quantity,
   item,
@@ -18,7 +19,7 @@ const SuccessfulItems = ({
   const theme = useTheme();
   const actionButtonsToRender = [
     { icon: <Undo />, onClick: () => successHandler(item, true), id: '1' },
-    { icon: <MoreVert />, disabled: true, id: '2' },
+    { icon: <Delete />, onClick: () => deleteHandler(item), id: '2' },
   ];
 
   return (
@@ -51,6 +52,7 @@ const SuccessfulItems = ({
 SuccessfulItems.propTypes = {
   completedList: PropTypes.bool,
   successHandler: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
   itemName: PropTypes.string.isRequired,
   quantity: PropTypes.string,
   item: PropTypes.string.isRequired,

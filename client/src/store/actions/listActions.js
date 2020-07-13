@@ -5,6 +5,8 @@ import {
   LIST_ITEM_SUCCESS_FAIL,
   LIST_ITEM_PROBLEM_SUCCESS,
   LIST_ITEM_PROBLEM_FAIL,
+  LIST_ITEM_DELETE_SUCCESS,
+  LIST_ITEM_DELETE_FAIL,
   FETCH_ALL_LISTS_SUCCESS,
   FETCH_ALL_LISTS_FAIL,
   FETCH_LIST_SUCCESS,
@@ -44,10 +46,11 @@ export const fetchLists = () => async (dispatch) => {
 
 //Desc: Fetches an individual list. Used for detailed list view via useList() hook.
 
-export const fetchList = (id) => async (dispatch) => {
+export const fetchList = (id, isRefresh) => async (dispatch) => {
   try {
     const res = await axios.get(`/api/lists/${id}`);
     dispatch({ type: FETCH_LIST_SUCCESS, payload: res.data });
+    if (isRefresh) dispatch(showAlert(true, 'List refreshed', 'info'));
   } catch (error) {
     const errors = await error.response.data.errors;
     if (errors) {
@@ -236,7 +239,8 @@ export const listItemSuccess = (id, itemId, userName, undo) => async (
     },
   };
   let body;
-  if (undo) body = JSON.stringify({ success: false, name: userName });
+  if (undo)
+    body = JSON.stringify({ success: false, name: userName, undo: true });
   else body = JSON.stringify({ success: true, name: userName });
   try {
     const res = await axios.put(
@@ -299,6 +303,25 @@ export const listItemProblem = (
     }
     dispatch({
       type: LIST_ITEM_PROBLEM_FAIL,
+    });
+  }
+};
+
+//Desc: Deletes list item from the list.
+
+export const listItemDelete = (id, itemId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/lists/${id}/${itemId}/delete`);
+    dispatch({ type: LIST_ITEM_DELETE_SUCCESS, payload: res.data });
+    dispatch(showAlert(true, 'Item Deleted!', 'success'));
+    console.log('listItemDelete');
+  } catch (error) {
+    const errors = await error.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
+    }
+    dispatch({
+      type: LIST_ITEM_DELETE_FAIL,
     });
   }
 };
