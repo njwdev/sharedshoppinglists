@@ -13,10 +13,12 @@ const AppThemeWrapper = ({ children }) => {
   let prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   useEffect(() => {
     const getPaletteType = async () => {
-      if (user && user.profile.darkMode === true) await setTheme(darkTheme);
-      if (user && user.profile.darkMode === false) await setTheme(lightTheme);
-      if (!user && prefersDarkMode) await setTheme(darkTheme);
-      if (!user && !prefersDarkMode) await setTheme(lightTheme);
+      if ((user && user.profile.darkMode) || (!user && prefersDarkMode))
+        await setTheme(darkTheme);
+      if ((user && !user.profile.darkMode) || (!user && !prefersDarkMode))
+        await setTheme(lightTheme);
+      // if (!user && prefersDarkMode) await setTheme(darkTheme);
+      // if (!user && !prefersDarkMode) await setTheme(lightTheme);
     };
     getPaletteType();
     setLoading(false);
