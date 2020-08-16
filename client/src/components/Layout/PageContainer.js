@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import IconButton from '@material-ui/core/IconButton';
+import HelpRounded from '@material-ui/icons/HelpRounded';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import CustomDivider from './CustomDivider';
@@ -33,45 +35,59 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     padding: theme.spacing(1),
   },
-  pageTitle: {
+  pageTitleContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  pageTitleText: {
     position: 'relative',
     padding: theme.spacing(1, 1, 0),
+  },
+  helpDialog: {
+    position: 'relative',
+    textAlign: 'right',
+    // padding: theme.spacing(1, 1, 0),
   },
   footerText: {},
 }));
 
-const PageContainer = ({ children, pageTitle, footer }) => {
+const PageContainer = ({ children, pageTitle, helpDialog, footer }) => {
   const classes = useStyles();
   return (
     <Paper className={classes.paper}>
-      <Grid container>
-        <Grid item xs={12}>
-          <Typography variant='h6'>
-            <span className={classes.pageTitle}>{pageTitle}</span>
+      <Grid className={classes.pageTitleContainer} container>
+        <Grid item xs={6}>
+          <Typography className={classes.pageTitleText} variant='h6'>
+            {pageTitle}
           </Typography>
-          <CustomDivider />
         </Grid>
+        <Grid className={classes.helpDialog} item xs={6}>
+          <IconButton onClick={helpDialog}>
+            <HelpRounded />
+          </IconButton>
+        </Grid>
+      </Grid>
+      <CustomDivider />
 
-        <Grid
-          container
-          direction='row'
-          justify='center'
-          alignItems='center'
-          className={classes.container}>
-          <Grid item xs={12} sm={8} md={6}>
-            {children}
-          </Grid>
-          {footer ? (
-            <Grid container>
-              <Grid className={classes.footer} item xs={12}>
-                <CustomDivider />
-                <Typography className={classes.footerText} variant='caption'>
-                  {footer}
-                </Typography>
-              </Grid>
-            </Grid>
-          ) : null}
+      <Grid
+        container
+        direction='row'
+        justify='center'
+        alignItems='center'
+        className={classes.container}>
+        <Grid item xs={12} sm={8} md={6}>
+          {children}
         </Grid>
+        {footer ? (
+          <Grid container>
+            <Grid className={classes.footer} item xs={12}>
+              <CustomDivider />
+              <Typography className={classes.footerText} variant='caption'>
+                {footer}
+              </Typography>
+            </Grid>
+          </Grid>
+        ) : null}
       </Grid>
     </Paper>
   );
@@ -80,6 +96,7 @@ const PageContainer = ({ children, pageTitle, footer }) => {
 PageContainer.propTypes = {
   children: PropTypes.node.isRequired,
   pageTitle: PropTypes.string.isRequired,
+  helpDialog: PropTypes.func.isRequired,
   footer: PropTypes.string,
 };
 
