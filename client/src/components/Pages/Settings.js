@@ -61,6 +61,7 @@ const Settings = () => {
   };
 
   const handleBlur = () => {
+    //Fixes bug where onBlur was preventing onSubmit with inline form
     setTimeout(() => {
       setEditLocation(false);
       setEditName(false);

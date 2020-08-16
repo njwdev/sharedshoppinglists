@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 //MUI Icons
 import GroupAdd from '@material-ui/icons/Add';
 import PostAdd from '@material-ui/icons/PostAdd';
-
 import { useLists } from '../../hooks/useLists';
 import ListOverview from './ListViews/ListOverview';
 import CreateList from './ListViews/ListViewComponents/CreateList';
@@ -12,7 +11,7 @@ import NoItems from '../Layout/NoItems';
 import PageContainer from '../Layout/PageContainer';
 import FabListButtons from '../Layout/FabListButtons';
 
-const ListsOverview = ({ listsCategory, pageTitle }) => {
+const ListsOverview = ({ listsCategory, pageTitle, helpDialog }) => {
   const [showAddList, setShowAddList] = useState(false);
   const [lists, loading] = useLists();
   let listsToMap;
@@ -39,7 +38,7 @@ const ListsOverview = ({ listsCategory, pageTitle }) => {
     <Spinner />
   ) : (
     <>
-      <PageContainer pageTitle={pageTitle}>
+      <PageContainer pageTitle={pageTitle} helpDialog={helpDialog}>
         {listsCategory === 'active' ? (
           <FabListButtons buttonsToRender={buttonsToRender} />
         ) : null}
