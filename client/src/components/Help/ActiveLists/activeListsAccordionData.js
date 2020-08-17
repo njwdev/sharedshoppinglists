@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+
 import PostAdd from '@material-ui/icons/PostAdd';
 import ShoppingCartRounded from '@material-ui/icons/ShoppingCartRounded';
 import ReportProblemRounded from '@material-ui/icons/ReportProblemRounded';
@@ -8,21 +8,7 @@ import DoneRounded from '@material-ui/icons/DoneRounded';
 import DoneOutlined from '@material-ui/icons/DoneOutlined';
 import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
 import GroupAdd from '@material-ui/icons/GroupAdd';
-
-const iconList = [
-  {
-    icon: <ShoppingCartRounded style={{ color: 'black' }} />,
-    text: 'A preview of the number of items you need to get',
-  },
-  {
-    icon: <ReportProblemRounded style={{ color: 'red' }} />,
-    text: 'A preview of how many items have encountered a problem.',
-  },
-  {
-    icon: <DoneRounded style={{ color: 'green' }} />,
-    text: 'A preview of the number of items you need to get.',
-  },
-];
+import HelpIconList from './HelpIconList';
 
 export const accordionData = [
   {
@@ -76,18 +62,7 @@ export const accordionData = [
         mean?
       </Typography>
     ),
-    accordionDetails: (
-      <List dense disablePadding>
-        {iconList.map((data) => (
-          <ListItem key={data.text} divider dense>
-            <ListItemIcon>{data.icon}</ListItemIcon>
-            <ListItemText>
-              <Typography variant='body2'>{data.text}</Typography>
-            </ListItemText>
-          </ListItem>
-        ))}
-      </List>
-    ),
+    accordionDetails: <HelpIconList />,
   },
   {
     accordionPanel: 'panel5',
