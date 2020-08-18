@@ -81,7 +81,7 @@ export const accordionData = [
     accordionDetails: (
       <Typography variant='body2'>
         To delete a list, click on the <DeleteOutlined fontSize='inherit' />{' '}
-        button in the bottom right corner. The list will be permanently delete
+        button in the bottom right corner. The list will be permanently deleted.
       </Typography>
     ),
   },

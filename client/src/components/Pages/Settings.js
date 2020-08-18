@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -12,6 +11,7 @@ import { updateProfile } from '../../store/actions/profileActions';
 import ChangePassword from '../Settings/ChangePassword';
 import { useProfileData } from '../../hooks/useProfileData';
 import InlineUpdateForm from '../Forms/InlineUpdateForm';
+import SettingsHelp from '../Help/Settings/Settings';
 
 const useStyles = makeStyles((theme) => ({
   settingBox: {
@@ -35,6 +35,14 @@ const Settings = () => {
   const [openChangePasswordDialog, setOpenChangePasswordDialog] = useState(
     false
   );
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const helpDialogOpenHandler = () => {
+    setDialogOpen(true);
+  };
+  const helpDialogCloseHandler = () => {
+    setDialogOpen(false);
+  };
 
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -110,7 +118,9 @@ const Settings = () => {
     <Spinner></Spinner>
   ) : (
     <>
-      <PageContainer pageTitle='Settings'>
+      <PageContainer
+        helpDialog={() => helpDialogOpenHandler()}
+        pageTitle='Settings'>
         <Grid className={classes.settingBox} container>
           <Grid className={classes.emailText} item xs={4}>
             <Typography variant='h6'>Email:</Typography>
@@ -162,6 +172,9 @@ const Settings = () => {
           />
         ) : null}
       </PageContainer>
+      <SettingsHelp
+        dialogOpen={dialogOpen}
+        handleDialogClose={() => helpDialogCloseHandler()}></SettingsHelp>
     </>
   );
 };
