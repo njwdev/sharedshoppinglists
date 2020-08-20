@@ -6,7 +6,6 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
 const HelpAccordion = ({
-  accordionPanel,
   accordionSummary,
   accordionDetails,
   expanded,
@@ -23,9 +22,10 @@ const HelpAccordion = ({
 };
 
 HelpAccordion.propTypes = {
-  accordionPanel: PropTypes.string.isRequired,
   accordionSummary: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   accordionDetails: PropTypes.node,
+  expanded: PropTypes.bool,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default HelpAccordion;

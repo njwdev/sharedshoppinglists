@@ -5,7 +5,6 @@ import Spinner from '../Layout/Spinner';
 import { Typography, Button, Divider, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PageContainer from '../Layout/PageContainer';
-
 import { loadUser } from '../../store/actions/authActions';
 import logo from '../../assets/logos/SSL_LOGO.png';
 
@@ -15,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     background: theme.palette.common.white,
-    // margin: '0 auto',
   },
   appDescription: {
     margin: theme.spacing(1, 0),
@@ -30,8 +28,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0),
   },
   button: {
-    // animation: `$button 1s`,
-    // animationDelay: '2s',
     marginTop: theme.spacing(4),
   },
   '@keyframes imageFade': {

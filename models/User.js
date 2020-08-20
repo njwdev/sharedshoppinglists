@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema({
   prevLogin: {
     type: Date,
   },
+  loginCount: {
+    type: Number,
+    default: 0,
+  },
   profile: {
     name: {
       type: String,
