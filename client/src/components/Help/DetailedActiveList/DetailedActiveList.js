@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import HelpDialog from '../../Layout/HelpDialog';
-import { accordionData } from './detailedActiveListAccordionData';
+import { accordionData } from './accordionData';
 
 const DetailedActiveList = ({ dialogOpen, handleDialogClose }) => {
   return (
@@ -13,6 +14,11 @@ const DetailedActiveList = ({ dialogOpen, handleDialogClose }) => {
       />
     </>
   );
+};
+
+DetailedActiveList.propTypes = {
+  dialogOpen: PropTypes.bool,
+  handleDialogClose: PropTypes.func.isRequired,
 };
 
 export default DetailedActiveList;

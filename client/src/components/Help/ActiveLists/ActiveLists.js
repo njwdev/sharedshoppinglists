@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { accordionData } from './activeListsAccordionData';
+import { accordionData } from './accordionData';
 import HelpDialog from '../../Layout/HelpDialog';
 
 const ActiveListsHelp = ({ dialogOpen, handleDialogClose }) => {

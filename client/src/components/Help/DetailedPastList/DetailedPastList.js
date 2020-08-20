@@ -1,6 +1,6 @@
 import React from 'react';
 import HelpDialog from '../../Layout/HelpDialog';
-import { accordionData } from './detailedPastListAccordionData';
+import { accordionData } from './accordionData';
 
 const DetailedPastList = ({ dialogOpen, handleDialogClose }) => {
   return (
