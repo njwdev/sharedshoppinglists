@@ -61,6 +61,8 @@ router.post(
 
       user.lastLogin = Date.now();
 
+      user.loginCount++;
+
       await user.save();
 
       const payload = {

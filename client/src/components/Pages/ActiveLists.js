@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import ListsOverview from '../Lists/ListsOverview';
 import { useNumberOfLists } from '../../hooks/useLists';
 import ActiveListsHelp from '../Help/ActiveLists/ActiveLists';
@@ -6,6 +7,7 @@ import ActiveListsHelp from '../Help/ActiveLists/ActiveLists';
 const ActiveLists = () => {
   const [activeListsNumber] = useNumberOfLists();
   const [dialogOpen, setDialogOpen] = useState(false);
+
   const helpDialogOpenHandler = () => {
     setDialogOpen(true);
   };
