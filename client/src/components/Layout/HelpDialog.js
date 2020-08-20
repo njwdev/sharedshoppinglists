@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@material-ui/core';
-import HelpAccordion from '../../Layout/HelpAccordion';
-import DialogBox from '../../Layout/DialogBox';
-import { accordionData } from './settingsAccordionData';
+import Button from '@material-ui/core/Button';
+import HelpAccordion from './HelpAccordion';
+import DialogBox from './DialogBox';
 
-const PastListsHelp = ({ dialogOpen, handleDialogClose }) => {
+const HelpDialogBox = ({
+  dialogOpen,
+  handleDialogClose,
+  dialogTitle,
+  accordionData,
+}) => {
   const [expanded, setExpanded] = useState('panel1');
 
   const handleChange = (panel) => (event, isExpanded) => {
@@ -16,7 +20,7 @@ const PastListsHelp = ({ dialogOpen, handleDialogClose }) => {
       <DialogBox
         dialogOpen={dialogOpen}
         handleDialogClose={handleDialogClose}
-        dialogTitle='Past Lists'
+        dialogTitle={dialogTitle}
         dialogActions={<Button onClick={handleDialogClose}>Close</Button>}>
         {accordionData.map((data) => (
           <HelpAccordion
@@ -33,9 +37,11 @@ const PastListsHelp = ({ dialogOpen, handleDialogClose }) => {
   );
 };
 
-PastListsHelp.propTypes = {
+HelpDialogBox.propTypes = {
   dialogOpen: PropTypes.bool,
   handleDialogClose: PropTypes.func.isRequired,
+  accordionData: PropTypes.array.isRequired,
+  dialogTitle: PropTypes.string.isRequired,
 };
 
-export default PastListsHelp;
+export default HelpDialogBox;

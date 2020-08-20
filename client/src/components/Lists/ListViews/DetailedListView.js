@@ -17,6 +17,8 @@ import CompletedListMessage from './ListViewComponents/CompletedListMessage';
 import ListCard from './ListViewComponents/ListCard';
 import ListTitle from './ListViewComponents/ListTitle';
 import SharedWith from './ListViewComponents/SharedWith';
+import DetailedActiveListHelp from '../../Help/DetailedActiveList/DetailedActiveList';
+import DetailedPastListHelp from '../../Help/DetailedPastList/DetailedPastList';
 
 const DetailedListView = () => {
   const history = useHistory();
@@ -36,6 +38,14 @@ const DetailedListView = () => {
     dispatch(fetchList(id, true));
   };
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const helpDialogOpenHandler = () => {
+    setDialogOpen(true);
+  };
+  const helpDialogCloseHandler = () => {
+    setDialogOpen(false);
+  };
+
   const handleDeleteList = (id) => {
     dispatch(deleteList(id, history));
   };
@@ -51,7 +61,7 @@ const DetailedListView = () => {
   return loading || !list ? (
     <Spinner />
   ) : (
-    <PageContainer pageTitle='List'>
+    <PageContainer pageTitle='List' helpDialog={() => helpDialogOpenHandler()}>
       <ListCard
         completedList={completedList}
         listTitle={
@@ -96,6 +106,17 @@ const DetailedListView = () => {
           />
         }
       />
+      {completedList ? (
+        <DetailedPastListHelp
+          dialogOpen={dialogOpen}
+          handleDialogClose={() => helpDialogCloseHandler()}
+        />
+      ) : (
+        <DetailedActiveListHelp
+          dialogOpen={dialogOpen}
+          handleDialogClose={() => helpDialogCloseHandler()}
+        />
+      )}
     </PageContainer>
   );
 };

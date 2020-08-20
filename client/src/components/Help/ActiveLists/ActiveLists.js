@@ -1,34 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@material-ui/core';
-import HelpAccordion from '../../Layout/HelpAccordion';
-import DialogBox from '../../Layout/DialogBox';
 import { accordionData } from './activeListsAccordionData';
+import HelpDialog from '../../Layout/HelpDialog';
 
 const ActiveListsHelp = ({ dialogOpen, handleDialogClose }) => {
-  const [expanded, setExpanded] = React.useState('panel1');
-
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
   return (
     <>
-      <DialogBox
+      <HelpDialog
+        dialogTitle={'Active Lists'}
         dialogOpen={dialogOpen}
         handleDialogClose={handleDialogClose}
-        dialogTitle='Active Lists'
-        dialogActions={<Button onClick={handleDialogClose}>Close</Button>}>
-        {accordionData.map((data) => (
-          <HelpAccordion
-            key={data.accordionPanel}
-            expanded={expanded === data.accordionPanel}
-            onChange={handleChange(data.accordionPanel)}
-            accordionPanel={data.accordionPanel}
-            accordionSummary={data.accordionSummary}
-            accordionDetails={data.accordionDetails}
-          />
-        ))}
-      </DialogBox>
+        accordionData={accordionData}
+      />
     </>
   );
 };
