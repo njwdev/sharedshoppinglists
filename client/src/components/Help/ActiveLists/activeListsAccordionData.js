@@ -1,6 +1,5 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-
 import PostAdd from '@material-ui/icons/PostAdd';
 import ShoppingCartRounded from '@material-ui/icons/ShoppingCartRounded';
 import ReportProblemRounded from '@material-ui/icons/ReportProblemRounded';
