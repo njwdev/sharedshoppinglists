@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import ListsOverview from '../Lists/ListsOverview';
 import { useNumberOfLists } from '../../hooks/useLists';
 import ActiveListsHelp from '../Help/ActiveLists/ActiveLists';

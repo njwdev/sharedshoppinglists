@@ -7,7 +7,7 @@ import DoneRounded from '@material-ui/icons/DoneRounded';
 import DoneOutlined from '@material-ui/icons/DoneOutlined';
 import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
 import GroupAdd from '@material-ui/icons/GroupAdd';
-import HelpIconList from './HelpIconList';
+import ListIconsHelp from './ListIconsHelp';
 
 export const accordionData = [
   {
@@ -61,7 +61,7 @@ export const accordionData = [
         mean?
       </Typography>
     ),
-    accordionDetails: <HelpIconList />,
+    accordionDetails: <ListIconsHelp />,
   },
   {
     accordionPanel: 'panel5',

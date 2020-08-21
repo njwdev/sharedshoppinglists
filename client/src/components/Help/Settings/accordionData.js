@@ -1,6 +1,5 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
 
 export const accordionData = [
   {
