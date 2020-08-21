@@ -1,17 +1,11 @@
 import React from 'react';
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  useTheme,
-} from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
+import { useTheme } from '@material-ui/core';
 import ShoppingCartRounded from '@material-ui/icons/ShoppingCartRounded';
 import ReportProblemRounded from '@material-ui/icons/ReportProblemRounded';
 import DoneRounded from '@material-ui/icons/DoneRounded';
+import HelpIconList from '../../Layout/HelpIconList';
 
-const HelpIconList = () => {
+const ListIconsHelp = () => {
   const theme = useTheme();
   const iconList = [
     {
@@ -30,17 +24,10 @@ const HelpIconList = () => {
     },
   ];
   return (
-    <List dense disablePadding>
-      {iconList.map((data) => (
-        <ListItem key={data.text} divider dense>
-          <ListItemIcon>{data.icon}</ListItemIcon>
-          <ListItemText>
-            <Typography variant='body2'>{data.text}</Typography>
-          </ListItemText>
-        </ListItem>
-      ))}
-    </List>
+    <>
+      <HelpIconList iconList={iconList} />
+    </>
   );
 };
 
-export default HelpIconList;
+export default ListIconsHelp;
