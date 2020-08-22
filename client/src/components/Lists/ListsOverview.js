@@ -10,6 +10,7 @@ import Spinner from '../Layout/Spinner';
 import NoItems from '../Layout/NoItems';
 import PageContainer from '../Layout/PageContainer';
 import FabListButtons from '../Layout/FabListButtons';
+import { Button } from '@material-ui/core';
 
 const ListsOverview = ({ listsCategory, pageTitle, helpDialog }) => {
   const [showAddList, setShowAddList] = useState(false);
@@ -54,6 +55,7 @@ const ListsOverview = ({ listsCategory, pageTitle, helpDialog }) => {
         {listsToMap.map((list) => (
           <ListOverview key={list._id} list={list}></ListOverview>
         ))}
+        <Button onDoubleClick={() => alert('hello')}>Test</Button>
       </PageContainer>
     </>
   );
