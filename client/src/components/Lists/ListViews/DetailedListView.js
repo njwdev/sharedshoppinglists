@@ -77,7 +77,7 @@ const DetailedListView = () => {
             list={list}
             editOpen={() => setEditOpen(!editOpen)}
             editTitleButton={completedList ? false : true}
-            refreshListButton={true}
+            refreshListButton={completedList ? false : true}
             refreshListHandler={refreshListHandler}
             deleteListButton={true}
             reactivateListButton={completedList ? true : false}
