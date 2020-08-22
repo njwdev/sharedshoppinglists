@@ -22,7 +22,6 @@ import {
 const initialState = {
   token: localStorage.getItem('token'),
   isAuth: null,
-  loading: true,
   user: null,
   error: null,
 };
@@ -34,7 +33,6 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isAuth: true,
-        loading: false,
         user: payload,
       };
     }
@@ -47,7 +45,6 @@ export default function (state = initialState, action) {
         ...state,
         ...payload,
         isAuth: true,
-        loading: false,
       };
     }
     case GET_PROFILE_SUCCESS:
@@ -56,7 +53,6 @@ export default function (state = initialState, action) {
       return {
         ...state,
         user: { ...state.user, profile: payload },
-        loading: false,
       };
     }
     case SIGN_UP_USER_FAIL:
@@ -71,7 +67,6 @@ export default function (state = initialState, action) {
         ...state,
         token: null,
         isAuth: false,
-        loading: false,
         user: null,
         error: payload,
       };

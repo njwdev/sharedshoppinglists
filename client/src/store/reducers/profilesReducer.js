@@ -5,7 +5,6 @@ import {
 
 const initialState = {
   profiles: [],
-  loading: true,
 };
 
 export default function (state = initialState, action) {
@@ -15,14 +14,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         profiles: payload,
-        loading: false,
       };
     }
     case FETCH_ALL_PROFILES_FAIL: {
       return {
         ...state,
         profiles: null,
-        loading: false,
       };
     }
     default:
