@@ -5,10 +5,12 @@ import Typography from '@material-ui/core/Typography';
 import { useTheme, IconButton } from '@material-ui/core';
 import SettingsRounded from '@material-ui/icons/SettingsRounded';
 import EditSharedWith from './EditSharedWith';
+import { useCreator } from '../../../../hooks/useCreator';
 
 const SharedWith = ({ list, user }) => {
   const [sharedWith] = useSharedWith(list, user);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const creator = useCreator(list, user);
 
   const sharedWithDialogOpenHandler = () => {
     setDialogOpen(true);
@@ -35,9 +37,11 @@ const SharedWith = ({ list, user }) => {
       ) : (
         <Typography variant='caption'>No one</Typography>
       )}
-      <IconButton onClick={() => sharedWithDialogOpenHandler()} size='small'>
-        <SettingsRounded fontSize='inherit' />
-      </IconButton>
+      {creator ? (
+        <IconButton onClick={() => sharedWithDialogOpenHandler()} size='small'>
+          <SettingsRounded fontSize='inherit' />
+        </IconButton>
+      ) : null}
       {dialogOpen ? (
         <EditSharedWith
           handleDialogClose={sharedWithDialogCloseHandler}
