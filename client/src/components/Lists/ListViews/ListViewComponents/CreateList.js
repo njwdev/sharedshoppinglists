@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
-import AutoComplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import { createList } from '../../../../store/actions/listActions';
 import { getProfiles } from '../../../../store/actions/profileActions';
 import Spinner from '../../../Layout/Spinner';
 import SubmitButton from '../../../Layout/SubmitButton';
+import AddListUsers from './AddListUsers';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -64,7 +64,6 @@ const CreateList = () => {
       name: u.profile.name,
       userId: u._id,
     }));
-
     if (value === null) {
       setFormData({ ...formData, sharedWith: [{ name: '', id: '' }] });
     } else {
@@ -106,33 +105,17 @@ const CreateList = () => {
           onChange={(e) => onChangeHandler(e)}
           autoFocus
         />
-        <AutoComplete
-          key={solveLabelIssue}
-          multiple
-          id='search users'
+        <AddListUsers
           options={profileOptions}
           getOptionLabel={(profile) => profile.profile.name}
-          forcePopupIcon={false}
-          noOptionsText='No users found'
           onChange={(e, value) => onACChangeHandler(e, value)}
-          clearOnBlur
-          clearOnEscape
           renderOption={(profile) => (
-            <React.Fragment>
+            <>
               <span>{profile.profile.name}</span>
               <span className={classes.profileLocation}>
                 {profile.profile.location}
               </span>
-            </React.Fragment>
-          )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              id='sharedWith'
-              name='sharedWith'
-              // value={sharedWith}
-              label='Share your list with... (optional)'
-            />
+            </>
           )}
         />
         <SubmitButton
