@@ -54,6 +54,64 @@ router.post(
   }
 );
 
+// Route:PUT api/lists/updated
+// Desc: Update sharedwith on a list
+// Access: Private
+
+router.put('/update-list-users', auth, async (req, res) => {
+  try {
+    console.log(req.body);
+    const { listId, sharedWith } = req.body;
+    const newList = await List.findById(listId).select();
+    //Adds the new users which come from sharedWith update to the listUsers array
+    newList.listUsers = newList.listUsers.concat(sharedWith);
+    console.log('HEYY' + newList.listUsers);
+    const list = await newList.save();
+    console.log(list.listUsers);
+    res.json(list);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Route:PUT api/lists/updated
+// Desc: Remove list user from listUsers
+// Access: Private
+
+router.put('/:listId/:userId/remove', auth, async (req, res) => {
+  try {
+    console.log(req.params.userId);
+    console.log(req.params.listId);
+
+    const list = await List.findById(req.params.listId);
+    const updatedUsers = await list.listUsers.filter(
+      (el) => el.id !== req.params.userId
+    );
+    list.listUsers = updatedUsers;
+    await list.save();
+    res.send(list);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.put('/:id/:itemId/delete', auth, async (req, res) => {
+  try {
+    const list = await List.findById(req.params.id);
+    const updatedItems = await list.listItems.filter(
+      (el) => el.id !== req.params.itemId
+    );
+    list.listItems = updatedItems;
+    await list.save();
+    res.send(list);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // Route: GET /api/lists
 // Desc: Gets all of the lists that are associated with a user
 // Access: Private

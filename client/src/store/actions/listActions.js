@@ -7,6 +7,8 @@ import {
   LIST_ITEM_PROBLEM_FAIL,
   LIST_ITEM_DELETE_SUCCESS,
   LIST_ITEM_DELETE_FAIL,
+  LIST_USER_REMOVED_SUCCESS,
+  LIST_USER_REMOVED_FAIL,
   FETCH_ALL_LISTS_SUCCESS,
   FETCH_ALL_LISTS_FAIL,
   FETCH_LIST_SUCCESS,
@@ -21,6 +23,8 @@ import {
   COMPLETE_LIST_FAIL,
   REACTIVATE_LIST_SUCCESS,
   REACTIVATE_LIST_FAIL,
+  UPDATE_SHARED_WITH_SUCCESS,
+  UPDATE_SHARED_WITH_FAIL,
 } from './actionTypes';
 import { showAlert } from './alertActions';
 import axios from 'axios';
@@ -141,6 +145,52 @@ export const completeList = (id, history) => async (dispatch) => {
     }
     dispatch({
       type: COMPLETE_LIST_FAIL,
+    });
+  }
+};
+
+//Desc: Updates the sharedWith array.
+//Used in sharedWithSettings.
+
+export const updateSharedWith = (listId, sharedWith) => async (dispatch) => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  console.log(sharedWith);
+  const body = JSON.stringify({ listId, sharedWith });
+  console.log(body);
+  try {
+    const res = await axios.put('/api/lists/update-list-users', body, config);
+    dispatch({
+      type: UPDATE_SHARED_WITH_SUCCESS,
+      payload: res.data,
+    });
+    dispatch(showAlert(true, 'List updated!', 'success'));
+  } catch (error) {
+    const errors = await error.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
+    }
+    dispatch({
+      type: UPDATE_SHARED_WITH_FAIL,
+    });
+  }
+};
+
+export const removeListUser = (userId, listId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/lists/${listId}/${userId}/remove`);
+    dispatch({ type: LIST_USER_REMOVED_SUCCESS, payload: res.data });
+    dispatch(showAlert(true, 'List user removed!', 'success'));
+  } catch (error) {
+    const errors = await error.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(showAlert(true, error.msg, 'error')));
+    }
+    dispatch({
+      type: LIST_USER_REMOVED_FAIL,
     });
   }
 };
