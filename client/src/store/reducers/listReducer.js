@@ -7,12 +7,16 @@ import {
   LIST_ITEM_SUCCESS_FAIL,
   LIST_ITEM_PROBLEM_SUCCESS,
   LIST_ITEM_PROBLEM_FAIL,
+  LIST_USER_REMOVED_SUCCESS,
+  LIST_USER_REMOVED_FAIL,
   FETCH_ALL_LISTS_SUCCESS,
   FETCH_ALL_LISTS_FAIL,
   FETCH_LIST_SUCCESS,
   FETCH_LIST_FAIL,
   CREATE_LIST_SUCCESS,
   CREATE_LIST_FAIL,
+  UPDATE_SHARED_WITH_SUCCESS,
+  UPDATE_SHARED_WITH_FAIL,
   UPDATE_LIST_SUCCESS,
   UPDATE_LIST_FAIL,
   DELETE_LIST_SUCCESS,
@@ -49,7 +53,8 @@ export default function (state = initialState, action) {
       };
 
     //*********INDIVIDUAL LIST*********/
-    case CREATE_LIST_SUCCESS: {
+    case CREATE_LIST_SUCCESS:
+    case UPDATE_SHARED_WITH_SUCCESS: {
       return {
         ...state,
         lists: [payload, ...state.lists],
@@ -63,6 +68,7 @@ export default function (state = initialState, action) {
       };
 
     case CREATE_LIST_FAIL:
+    case UPDATE_SHARED_WITH_FAIL:
     case DELETE_LIST_FAIL: {
       return {
         ...state,
@@ -73,13 +79,15 @@ export default function (state = initialState, action) {
     case UPDATE_LIST_SUCCESS:
     case COMPLETE_LIST_SUCCESS:
     case REACTIVATE_LIST_SUCCESS:
-    case FETCH_LIST_SUCCESS: {
+    case FETCH_LIST_SUCCESS:
+    case LIST_USER_REMOVED_SUCCESS: {
       return {
         ...state,
         list: payload,
       };
     }
     case UPDATE_LIST_FAIL:
+    case LIST_USER_REMOVED_FAIL:
     case COMPLETE_LIST_FAIL:
     case REACTIVATE_LIST_FAIL:
     case FETCH_LIST_FAIL: {

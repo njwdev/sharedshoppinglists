@@ -30,6 +30,7 @@ const DetailedListView = () => {
   const { user } = useSelector((state) => state.user);
 
   const [list, loading] = useList();
+
   //Determine whether list is completed
   const completedList = list && list.complete && list.complete.complete;
 

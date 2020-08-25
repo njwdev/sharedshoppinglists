@@ -44,6 +44,7 @@ const SharedWith = ({ list, user }) => {
       ) : null}
       {dialogOpen ? (
         <EditSharedWith
+          list={list}
           handleDialogClose={sharedWithDialogCloseHandler}
           dialogOpen={dialogOpen}
           sharedWith={sharedWith}
