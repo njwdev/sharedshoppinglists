@@ -8,6 +8,7 @@ import EditSharedWith from './EditSharedWith';
 import { useCreator } from '../../../../hooks/useCreator';
 
 const SharedWith = ({ list, user }) => {
+  
   const [sharedWith] = useSharedWith(list, user);
   const [dialogOpen, setDialogOpen] = useState(false);
   const creator = useCreator(list, user);

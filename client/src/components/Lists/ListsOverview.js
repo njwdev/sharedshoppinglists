@@ -55,7 +55,6 @@ const ListsOverview = ({ listsCategory, pageTitle, helpDialog }) => {
         {listsToMap.map((list) => (
           <ListOverview key={list._id} list={list}></ListOverview>
         ))}
-        <Button onDoubleClick={() => alert('hello')}>Test</Button>
       </PageContainer>
     </>
   );
