@@ -9,7 +9,6 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import TabContext from '@material-ui/lab/TabContext';
 import TabList from '@material-ui/lab/TabList';
 import TabPanel from '@material-ui/lab/TabPanel';
-
 import SignInTab from './SignInTab';
 import SignUpTab from './SignUpTab';
 import logo from '../../assets/logos/SSL_LOGO.png';

@@ -93,7 +93,7 @@ const EditSharedWith = ({
   };
 
   const onSubmitHandler = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     console.log(listUsersData);
     dispatch(updateSharedWith(list._id, listUsersData));
     setListUsersData([{}]);
